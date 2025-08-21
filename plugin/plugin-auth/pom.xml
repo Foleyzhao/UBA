@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.huanniankj</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>plugin-auth</artifactId>
+    <packaging>jar</packaging>
+    <description>登录鉴权插件</description>
+
+    <dependencies>
+
+        <!-- 每个插件都要引入自己的对外接口 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-auth-api</artifactId>
+        </dependency>
+
+        <!-- 引入开发工具接口，用于获取配置 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-dev-api</artifactId>
+        </dependency>
+
+        <!-- sa-token -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
+        </dependency>
+
+        <!-- sa-token 整合 redis （使用jackson序列化方式） -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+        </dependency>
+
+        <!-- Sa-Token插件：权限缓存与业务缓存分离 -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-alone-redis</artifactId>
+        </dependency>
+
+        <!-- Sa-Token 插件：整合SSO -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-sso</artifactId>
+        </dependency>
+
+        <!-- JustAuth 第三方登录 -->
+        <dependency>
+            <groupId>me.zhyd.oauth</groupId>
+            <artifactId>JustAuth</artifactId>
+        </dependency>
+    </dependencies>
+</project>

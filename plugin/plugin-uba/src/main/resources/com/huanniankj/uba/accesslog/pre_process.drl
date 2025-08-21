@@ -1,0 +1,58 @@
+package com.huanniankj.uba.accesslog
+
+
+import com.huanniankj.uba.core.event.PreprocessingFinishEvent
+
+global java.util.Map configMap;
+
+// 规则1: 请求来源过滤
+rule "UBA_DEFAULT_REFERER_FILTER"
+    when
+        eval(configMap.get("UBA_DEFAULT_ENABLE_REFERER_FILTER").equals("true"))
+        $log: PreprocessingFinishEvent(
+            httpReferer != null,
+            httpReferer matches configMap.get("UBA_DEFAULT_REFERER_FILTER_LIST")
+        )
+    then
+        $log.setPreprocessPass(false);
+        $log.setPreprocessMessage("UBA_DEFAULT_REFERER_FILTER");
+end
+
+// 规则2: 请求路径过滤
+rule "UBA_DEFAULT_URI_FILTER"
+    when
+        eval(configMap.get("UBA_DEFAULT_ENABLE_URI_FILTER").equals("true"))
+        $log: PreprocessingFinishEvent(
+            requestUri != null,
+            requestUri matches configMap.get("UBA_DEFAULT_URI_FILTER_LIST")
+        )
+    then
+        $log.setPreprocessPass(false);
+        $log.setPreprocessMessage("UBA_DEFAULT_URI_FILTER");
+end
+
+// 规则3: 客户端浏览器标识过滤
+rule "UBA_DEFAULT_UA_FILTER"
+    when
+        eval(configMap.get("UBA_DEFAULT_ENABLE_UA_FILTER").equals("true"))
+        $log: PreprocessingFinishEvent(
+            httpUserAgent != null,
+            httpUserAgent matches configMap.get("UBA_DEFAULT_UA_FILTER_LIST")
+        )
+    then
+        $log.setPreprocessPass(false);
+        $log.setPreprocessMessage("UBA_DEFAULT_UA_FILTER");
+end
+
+// 规则4: 客户端IP过滤
+rule "UBA_DEFAULT_IP_FILTER"
+    when
+        eval(configMap.get("UBA_DEFAULT_ENABLE_IP_FILTER").equals("true"))
+        $log: PreprocessingFinishEvent(
+            remoteAddr != null,
+            remoteAddr matches configMap.get("UBA_DEFAULT_IP_FILTER_LIST")
+        )
+    then
+        $log.setPreprocessPass(false);
+        $log.setPreprocessMessage("UBA_DEFAULT_IP_FILTER");
+end

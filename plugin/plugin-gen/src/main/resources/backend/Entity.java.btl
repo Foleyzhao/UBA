@@ -1,0 +1,41 @@
+package ${packageName}.${moduleName}.modular.${busName}.entity;
+
+import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * ${functionName}实体
+ *
+ * @author ${authorName}
+ */
+@Getter
+@Setter
+@TableName("${dbTable}")
+public class ${className} {
+
+    <% for(var i = 0; i < configList.~size; i++) { %>
+    /** ${configList[i].fieldRemark} */
+    <% if(configList[i].needTableId) { %>
+    @TableId
+    <% } else { %><% } %>
+    @Schema(description = "${configList[i].fieldRemark}")
+    <% if(configList[i].needAutoInsert) { %>
+    @TableField(fill = FieldFill.INSERT)
+    <% } else { %><% } %>
+    <% if(configList[i].needAutoUpdate) { %>
+    @TableField(fill = FieldFill.UPDATE)
+    <% } else { %><% } %>
+    <% if(configList[i].needLogicDelete) { %>
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
+    <% } else { %><% } %>
+    private ${configList[i].fieldJavaType} ${configList[i].fieldNameCamelCase};
+    <% if(i == configList.~size - 1) { %><% } else { %>
+
+    <% } %>
+    <% } %>
+}

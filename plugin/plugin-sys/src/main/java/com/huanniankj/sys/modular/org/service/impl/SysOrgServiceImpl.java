@@ -1,0 +1,419 @@
+package com.huanniankj.sys.modular.org.service.impl;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollStreamUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.huanniankj.common.enums.CommonSortOrderEnum;
+import com.huanniankj.common.exception.CommonException;
+import com.huanniankj.common.listener.CommonDataChangeEventCenter;
+import com.huanniankj.common.page.CommonPageRequest;
+import com.huanniankj.sys.core.enums.SysDataTypeEnum;
+import com.huanniankj.sys.modular.org.entity.SysOrg;
+import com.huanniankj.sys.modular.org.enums.SysOrgCategoryEnum;
+import com.huanniankj.sys.modular.org.enums.SysOrgSourceFromTypeEnum;
+import com.huanniankj.sys.modular.org.mapper.SysOrgMapper;
+import com.huanniankj.sys.modular.org.param.SysOrgAddParam;
+import com.huanniankj.sys.modular.org.param.SysOrgEditParam;
+import com.huanniankj.sys.modular.org.param.SysOrgIdParam;
+import com.huanniankj.sys.modular.org.param.SysOrgPageParam;
+import com.huanniankj.sys.modular.org.param.SysOrgSelectorOrgListParam;
+import com.huanniankj.sys.modular.org.param.SysOrgSelectorUserParam;
+import com.huanniankj.sys.modular.org.service.SysOrgExtService;
+import com.huanniankj.sys.modular.org.service.SysOrgService;
+import com.huanniankj.sys.modular.position.entity.SysPosition;
+import com.huanniankj.sys.modular.position.service.SysPositionService;
+import com.huanniankj.sys.modular.role.entity.SysRole;
+import com.huanniankj.sys.modular.role.service.SysRoleService;
+import com.huanniankj.sys.modular.user.entity.SysUser;
+import com.huanniankj.sys.modular.user.enums.SysUserStatusEnum;
+import com.huanniankj.sys.modular.user.service.SysUserService;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 组织服务接口实现类
+ *
+ * @author happynewyear
+ */
+@Service
+public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> implements SysOrgService {
+
+    @Resource
+    private SysOrgExtService sysOrgExtService;
+
+    @Resource
+    private SysRoleService sysRoleService;
+
+    @Resource
+    private SysPositionService sysPositionService;
+
+    @Resource
+    private SysUserService sysUserService;
+
+    @Override
+    public Page<SysOrg> page(SysOrgPageParam sysOrgPageParam) {
+        QueryWrapper<SysOrg> queryWrapper = new QueryWrapper<SysOrg>().checkSqlInjection();
+        // 查询部分字段
+        queryWrapper.lambda().select(SysOrg::getId, SysOrg::getParentId, SysOrg::getName,
+                SysOrg::getCategory, SysOrg::getSortCode);
+        if (ObjectUtil.isNotEmpty(sysOrgPageParam.getParentId())) {
+            queryWrapper.lambda().eq(SysOrg::getParentId, sysOrgPageParam.getParentId());
+        }
+        if (ObjectUtil.isNotEmpty(sysOrgPageParam.getSearchKey())) {
+            queryWrapper.lambda().like(SysOrg::getName, sysOrgPageParam.getSearchKey());
+        }
+        if (ObjectUtil.isAllNotEmpty(sysOrgPageParam.getSortField(), sysOrgPageParam.getSortOrder())) {
+            CommonSortOrderEnum.validate(sysOrgPageParam.getSortOrder());
+            queryWrapper.orderBy(true, sysOrgPageParam.getSortOrder()
+                            .equals(CommonSortOrderEnum.ASC.getValue()),
+                    StrUtil.toUnderlineCase(sysOrgPageParam.getSortField()));
+        } else {
+            queryWrapper.lambda().orderByAsc(SysOrg::getSortCode);
+        }
+        return this.page(CommonPageRequest.defaultPage(), queryWrapper);
+    }
+
+    @Override
+    public List<Tree<String>> tree() {
+        List<SysOrg> sysOrgList = this.getAllOrgList();
+        List<TreeNode<String>> treeNodeList = sysOrgList.stream().map(sysOrg ->
+                        new TreeNode<>(sysOrg.getId(), sysOrg.getParentId(),
+                                sysOrg.getName(), sysOrg.getSortCode()).setExtra(JSONUtil.parseObj(sysOrg)))
+                .collect(Collectors.toList());
+        return TreeUtil.build(treeNodeList, "0");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void add(SysOrgAddParam sysOrgAddParam, String sourceFromType) {
+        SysOrgCategoryEnum.validate(sysOrgAddParam.getCategory());
+        SysOrg sysOrg = BeanUtil.toBean(sysOrgAddParam, SysOrg.class);
+        // 重复名称
+        boolean repeatName = this.count(new LambdaQueryWrapper<SysOrg>().eq(SysOrg::getParentId, sysOrg.getParentId())
+                .eq(SysOrg::getName, sysOrg.getName())) > 0;
+        if (repeatName) {
+            throw new CommonException("存在重复的同级组织，名称为：{}", sysOrg.getName());
+        }
+        sysOrg.setCode(RandomUtil.randomString(10));
+        // 保存组织
+        this.save(sysOrg);
+        // 插入扩展信息
+        sysOrgExtService.createExtInfo(sysOrg.getId(), sourceFromType);
+        // 发布增加事件
+        CommonDataChangeEventCenter.doAddWithData(SysDataTypeEnum.ORG.getValue(), JSONUtil.createArray().put(sysOrg));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void edit(SysOrgEditParam sysOrgEditParam) {
+        SysOrgCategoryEnum.validate(sysOrgEditParam.getCategory());
+        SysOrg sysOrg = this.queryEntity(sysOrgEditParam.getId());
+        BeanUtil.copyProperties(sysOrgEditParam, sysOrg);
+        boolean repeatName = this.count(new LambdaQueryWrapper<SysOrg>().eq(SysOrg::getParentId, sysOrg.getParentId())
+                .eq(SysOrg::getName, sysOrg.getName()).ne(SysOrg::getId, sysOrg.getId())) > 0;
+        if (repeatName) {
+            throw new CommonException("存在重复的同级组织，名称为：{}", sysOrg.getName());
+        }
+        List<SysOrg> originDataList = this.getAllOrgList();
+        boolean errorLevel = this.getChildListById(originDataList, sysOrg.getId(), true).stream()
+                .map(SysOrg::getId).toList().contains(sysOrg.getParentId());
+        if (errorLevel) {
+            throw new CommonException("不可选择上级组织：{}", this.getById(originDataList, sysOrg.getParentId()).getName());
+        }
+        // 更新组织
+        this.updateById(sysOrg);
+        // 发布更新事件
+        CommonDataChangeEventCenter.doUpdateWithData(SysDataTypeEnum.ORG.getValue(), JSONUtil.createArray().put(sysOrg));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void delete(List<SysOrgIdParam> sysOrgIdParamList) {
+        List<String> orgIdList = CollStreamUtil.toList(sysOrgIdParamList, SysOrgIdParam::getId);
+        if (ObjectUtil.isNotEmpty(orgIdList)) {
+            List<SysOrg> allOrgList = this.getAllOrgList();
+            // 获取所有子组织
+            List<String> toDeleteOrgIdList = CollectionUtil.newArrayList();
+            orgIdList.forEach(orgId -> toDeleteOrgIdList.addAll(
+                    this.getChildListById(allOrgList, orgId, true).stream()
+                            .map(SysOrg::getId).toList()));
+
+            // 组织下有人不能删除（直属组织）
+            boolean hasOrgUser = sysUserService.count(new LambdaQueryWrapper<SysUser>()
+                    .in(SysUser::getOrgId, toDeleteOrgIdList)) > 0;
+            if (hasOrgUser) {
+                throw new CommonException("请先删除组织下的用户");
+            }
+            // 组织下有人不能删除（兼任组织）
+            List<String> positionJsonList = sysUserService.list(new LambdaQueryWrapper<SysUser>()
+                            .isNotNull(SysUser::getPositionJson)).stream().map(SysUser::getPositionJson)
+                    .collect(Collectors.toList());
+            if (ObjectUtil.isNotEmpty(positionJsonList)) {
+                List<String> positionOrgIdList = CollectionUtil.newArrayList();
+                positionJsonList.forEach(positionJson -> JSONUtil.toList(JSONUtil.parseArray(positionJson),
+                                JSONObject.class)
+                        .forEach(jsonObject -> positionOrgIdList.add(jsonObject.getStr("orgId"))));
+                boolean hasPositionUser = !CollectionUtil.intersectionDistinct(toDeleteOrgIdList,
+                        CollectionUtil.removeNull(positionOrgIdList)).isEmpty();
+                if (hasPositionUser) {
+                    throw new CommonException("请先删除组织下的用户");
+                }
+            }
+            // 组织下有角色不能删除
+            boolean hasRole = sysRoleService.count(new LambdaQueryWrapper<SysRole>()
+                    .in(SysRole::getOrgId, toDeleteOrgIdList)) > 0;
+            if (hasRole) {
+                throw new CommonException("请先删除组织下的角色");
+            }
+            // 组织下有职位不能删除
+            boolean hasPosition = sysPositionService.count(new LambdaQueryWrapper<SysPosition>()
+                    .in(SysPosition::getOrgId, toDeleteOrgIdList)) > 0;
+            if (hasPosition) {
+                throw new CommonException("请先删除组织下的职位");
+            }
+            // 执行删除
+            this.removeByIds(toDeleteOrgIdList);
+
+            // 发布删除事件
+            CommonDataChangeEventCenter.doDeleteWithDataIdList(SysDataTypeEnum.ORG.getValue(), toDeleteOrgIdList);
+        }
+    }
+
+    @Override
+    public SysOrg detail(SysOrgIdParam sysOrgIdParam) {
+        return this.queryEntity(sysOrgIdParam.getId());
+    }
+
+    @Override
+    public SysOrg queryEntity(String id) {
+        SysOrg sysOrg = this.getById(id);
+        if (ObjectUtil.isEmpty(sysOrg)) {
+            throw new CommonException("组织不存在，id值为：{}", id);
+        }
+        return sysOrg;
+    }
+
+    @Override
+    public List<SysOrg> getAllOrgList() {
+        return this.list(new LambdaQueryWrapper<SysOrg>().orderByAsc(SysOrg::getSortCode));
+    }
+
+    @Override
+    public String getOrgIdByOrgFullNameWithCreate(String orgFullName) {
+        List<SysOrg> allOrgList = this.getAllOrgList();
+        List<Tree<String>> treeList = TreeUtil.build(allOrgList.stream().map(sysOrg ->
+                        new TreeNode<>(sysOrg.getId(), sysOrg.getParentId(), sysOrg.getName(), sysOrg.getSortCode()))
+                .collect(Collectors.toList()), "0");
+        return findOrgIdByOrgName("0", StrUtil.split(orgFullName, StrUtil.DASHED).iterator(), allOrgList, treeList);
+    }
+
+    public String findOrgIdByOrgName(String parentId, Iterator<String> iterator, List<SysOrg> allOrgList, List<Tree<String>> treeList) {
+        String orgName = iterator.next();
+        if (ObjectUtil.isNotEmpty(treeList)) {
+            List<Tree<String>> findList = treeList.stream().filter(tree -> tree.getName().equals(orgName)).collect(Collectors.toList());
+            if (ObjectUtil.isNotEmpty(findList)) {
+                if (iterator.hasNext()) {
+                    return findOrgIdByOrgName(findList.get(0).getId(), iterator, allOrgList, findList.get(0).getChildren());
+                } else {
+                    return findList.get(0).getId();
+                }
+            }
+        }
+        String orgId = this.doCreateOrg(parentId, orgName, allOrgList);
+        if (iterator.hasNext()) {
+            return findOrgIdByOrgName(orgId, iterator, allOrgList, CollectionUtil.newArrayList());
+        } else {
+            return orgId;
+        }
+    }
+
+    /**
+     * 执行创建组织
+     */
+    public String doCreateOrg(String parentId, String orgName, List<SysOrg> allOrgList) {
+        //创建该组织
+        SysOrg sysOrg = new SysOrg();
+        sysOrg.setName(orgName);
+        sysOrg.setCode(RandomUtil.randomString(10));
+        sysOrg.setParentId(parentId);
+        sysOrg.setCategory("0".equals(parentId) ? SysOrgCategoryEnum.COMPANY.getValue() :
+                SysOrgCategoryEnum.DEPT.getValue());
+        sysOrg.setSortCode(99);
+        // 保存组织
+        this.save(sysOrg);
+        // 插入扩展信息
+        sysOrgExtService.createExtInfo(sysOrg.getId(), SysOrgSourceFromTypeEnum.SYSTEM_ADD.getValue());
+        // 发布增加事件
+        CommonDataChangeEventCenter.doAddWithData(SysDataTypeEnum.ORG.getValue(), JSONUtil.createArray().put(sysOrg));
+        return sysOrg.getId();
+    }
+
+    /* ====组织部分所需要用到的选择器==== */
+
+    @Override
+    public List<Tree<String>> orgTreeSelector() {
+        List<SysOrg> sysOrgList = this.getAllOrgList();
+        List<TreeNode<String>> treeNodeList = sysOrgList.stream().map(sysOrg ->
+                        new TreeNode<>(sysOrg.getId(), sysOrg.getParentId(), sysOrg.getName(), sysOrg.getSortCode()))
+                .collect(Collectors.toList());
+        return TreeUtil.build(treeNodeList, "0");
+    }
+
+    @Override
+    public Page<SysOrg> orgListSelector(SysOrgSelectorOrgListParam sysOrgSelectorOrgListParam) {
+        QueryWrapper<SysOrg> queryWrapper = new QueryWrapper<SysOrg>().checkSqlInjection();
+        // 查询部分字段
+        queryWrapper.lambda().select(SysOrg::getId, SysOrg::getParentId, SysOrg::getName,
+                SysOrg::getCategory, SysOrg::getSortCode);
+        if (ObjectUtil.isNotEmpty(sysOrgSelectorOrgListParam.getParentId())) {
+            queryWrapper.lambda().eq(SysOrg::getParentId, sysOrgSelectorOrgListParam.getParentId());
+        }
+        if (ObjectUtil.isNotEmpty(sysOrgSelectorOrgListParam.getSearchKey())) {
+            queryWrapper.lambda().like(SysOrg::getName, sysOrgSelectorOrgListParam.getSearchKey());
+        }
+        queryWrapper.lambda().orderByAsc(SysOrg::getSortCode);
+        return this.page(CommonPageRequest.defaultPage(), queryWrapper.lambda());
+    }
+
+    @Override
+    public Page<SysUser> userSelector(SysOrgSelectorUserParam sysOrgSelectorUserParam) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<SysUser>().checkSqlInjection();
+        // 只查询状态为正常的
+        queryWrapper.lambda().eq(SysUser::getUserStatus, SysUserStatusEnum.ENABLE.getValue());
+        // 只查询部分字段
+        queryWrapper.lambda().select(SysUser::getId, SysUser::getAvatar, SysUser::getOrgId, SysUser::getPositionId,
+                SysUser::getAccount, SysUser::getName, SysUser::getSortCode, SysUser::getGender, SysUser::getEntryDate);
+        // 如果查询条件为空，则直接查询
+        if (ObjectUtil.isAllEmpty(sysOrgSelectorUserParam.getOrgId(), sysOrgSelectorUserParam.getSearchKey())) {
+            return sysUserService.getAllUserSelectorList();
+        } else {
+            if (ObjectUtil.isNotEmpty(sysOrgSelectorUserParam.getOrgId())) {
+                // 如果组织id不为空，则查询该组织及其子组织下的所有人
+                List<String> childOrgIdList = CollStreamUtil.toList(this.getChildListById(this
+                        .getAllOrgList(), sysOrgSelectorUserParam.getOrgId(), true), SysOrg::getId);
+                if (ObjectUtil.isNotEmpty(childOrgIdList)) {
+                    queryWrapper.lambda().in(SysUser::getOrgId, childOrgIdList);
+                } else {
+                    return new Page<>();
+                }
+            }
+            if (ObjectUtil.isNotEmpty(sysOrgSelectorUserParam.getSearchKey())) {
+                queryWrapper.lambda().like(SysUser::getName, sysOrgSelectorUserParam.getSearchKey());
+            }
+            queryWrapper.lambda().orderByAsc(SysUser::getSortCode);
+            return sysUserService.page(CommonPageRequest.defaultPage(), queryWrapper.lambda());
+        }
+    }
+
+    @Override
+    public List<String> getParentIdListByOrgId(String orgId) {
+        List<SysOrg> sysOrgList = this.getAllOrgList();
+        List<String> resultList = CollectionUtil.newArrayList();
+        if (ObjectUtil.isNotEmpty(sysOrgList)) {
+            execRecursionFindParentByList(orgId, sysOrgList, resultList);
+        }
+        return resultList;
+    }
+
+    private List<String> execRecursionFindParentByList(String id, List<SysOrg> list, List<String> resultList) {
+        SysOrg parentById = list.stream().filter(sysOrg -> sysOrg.getId().equals(id)).findFirst().orElse(null);
+        if (ObjectUtil.isNotEmpty(parentById)) {
+            resultList.add(parentById.getParentId());
+            execRecursionFindParentByList(parentById.getParentId(), list, resultList);
+        }
+        return resultList;
+    }
+
+    /* ====以下为各种递归方法==== */
+
+    @Override
+    public List<SysOrg> getParentAndChildListById(List<SysOrg> originDataList, String id, boolean includeSelf) {
+        List<SysOrg> parentListById = this.getParentListById(originDataList, id, false);
+        List<SysOrg> childListById = this.getChildListById(originDataList, id, true);
+        parentListById.addAll(childListById);
+        return parentListById;
+    }
+
+    @Override
+    public List<SysOrg> getChildListById(List<SysOrg> originDataList, String id, boolean includeSelf) {
+        List<SysOrg> resultList = CollectionUtil.newArrayList();
+        execRecursionFindChild(originDataList, id, resultList);
+        if (includeSelf) {
+            SysOrg self = this.getById(originDataList, id);
+            if (ObjectUtil.isNotEmpty(self)) {
+                resultList.add(self);
+            }
+        }
+        return resultList;
+    }
+
+    @Override
+    public List<SysOrg> getParentListById(List<SysOrg> originDataList, String id, boolean includeSelf) {
+        List<SysOrg> resultList = CollectionUtil.newArrayList();
+        execRecursionFindParent(originDataList, id, resultList);
+        if (includeSelf) {
+            SysOrg self = this.getById(originDataList, id);
+            if (ObjectUtil.isNotEmpty(self)) {
+                resultList.add(self);
+            }
+        }
+        return resultList;
+    }
+
+    public void execRecursionFindChild(List<SysOrg> originDataList, String id, List<SysOrg> resultList) {
+        originDataList.forEach(item -> {
+            if (item.getParentId().equals(id)) {
+                resultList.add(item);
+                execRecursionFindChild(originDataList, item.getId(), resultList);
+            }
+        });
+    }
+
+    public void execRecursionFindParent(List<SysOrg> originDataList, String id, List<SysOrg> resultList) {
+        originDataList.forEach(item -> {
+            if (item.getId().equals(id)) {
+                SysOrg parent = this.getById(originDataList, item.getParentId());
+                if (ObjectUtil.isNotEmpty(parent)) {
+                    resultList.add(parent);
+                }
+                execRecursionFindParent(originDataList, item.getParentId(), resultList);
+            }
+        });
+    }
+
+    @Override
+    public SysOrg getById(List<SysOrg> originDataList, String id) {
+        int index = CollStreamUtil.toList(originDataList, SysOrg::getId).indexOf(id);
+        return index == -1 ? null : originDataList.get(index);
+    }
+
+    @Override
+    public SysOrg getParentById(List<SysOrg> originDataList, String id) {
+        SysOrg self = this.getById(originDataList, id);
+        return ObjectUtil.isNotEmpty(self) ? self : this.getById(originDataList, self.getParentId());
+    }
+
+    @Override
+    public SysOrg getChildById(List<SysOrg> originDataList, String id) {
+        int index = CollStreamUtil.toList(originDataList, SysOrg::getParentId).indexOf(id);
+        return index == -1 ? null : originDataList.get(index);
+    }
+
+}

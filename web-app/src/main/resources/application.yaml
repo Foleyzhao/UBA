@@ -1,0 +1,224 @@
+server:
+  port: 82
+spring:
+  application:
+    name: uba
+  main:
+    allow-circular-references: true
+  profiles:
+    active: local
+    # active: test
+    # active: prod
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+  datasource:
+    druid:
+      stat-view-servlet:
+        enabled: true
+        login-username: admin
+        login-password: uba@test_
+    dynamic:
+      datasource:
+        master: # MySQL主数据源
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://192.168.1.11:3306/uba?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&useInformationSchema=true&rewriteBatchedStatements=true
+          username: uba
+          password: Jishulink@2025_uba
+        clickhouse: # ClickHouse 数据源
+          url: jdbc:ch://localhost:8123/uba?use_timezone=Asia/Shanghai
+          username: uba
+          password: uba@test_
+          driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+          hikari:
+            maximum-pool-size: 5 # ClickHouse连接池
+            connection-timeout: 30000
+      strict: true
+      public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMWiTVtdXFVrgFHDDKELZM0SywkWY3KjugN90eY5Sogon1j8Y0ClPF7nx3FuE7pAeBKiv7ChIS0vvx/59WUpKmUCAwEAAQ==
+      druid:
+        initial-size: 5
+        max-active: 20
+        min-idle: 5
+        max-wait: 60000
+        pool-prepared-statements: true
+        max-pool-prepared-statement-per-connection-size: 20
+        validation-query-timeout: 2000
+        test-on-borrow: false
+        test-on-return: false
+        test-while-idle: true
+        validation-query: SELECT 1
+        time-between-eviction-runs-millis: 6000
+        min-evictable-idle-time-millis: 300000
+        filters: stat
+        break-after-acquire-failure: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    locale: zh_CN
+    serialization:
+      write-dates-as-timestamps: false
+  data:
+    redis:
+      database: 1
+      host: 192.168.1.11
+      port: 6379
+      password: ""
+      timeout: 10s
+      lettuce:
+        pool:
+          max-active: 200
+          max-wait: -1ms
+          max-idle: 10
+          min-idle: 0
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+#      bootstrap-servers: localhost:9092
+      group-id: backend
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 500    # 每次poll返回的最大记录数
+      fetch-min-size: 102400   # 最小抓取大小(字节)
+      fetch-max-wait: 500ms    # 等待消息的最大时间(ms)
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"  # 允许反序列化所有包（生产环境应限制为具体包名）
+        spring.json.value.default.type: com.huanniankj.uba.core.event.LogProcessingEvent  # 指定默认反序列化类型
+        max-poll-interval-ms: 300000       # 5分钟(防止重平衡)
+        max-poll-records: 500              # 每批最大记录数
+        fetch-max-wait-ms: 500             # 最大等待时间(ms)
+        fetch-min-bytes: 16384             # 最小抓取字节数
+        fetch-max-bytes: 52428800          # 50MB
+        heartbeat-interval-ms: 3000        # 心跳间隔
+        session-timeout-ms: 10000          # 会话超时
+        # request-timeout-ms: 40000          # 请求超时
+        # connections-max-idle-ms: 540000    # 连接空闲时间(9分钟)
+    listener:
+      type: batch                        # 启用批量监听
+      ack-mode: MANUAL                   # 手动提交偏移量
+      concurrency: 3                     # 并发消费者数量
+      poll-timeout: 3000                 # 轮询超时时间(ms)
+      idle-event-interval: 60000         # 空闲事件间隔(ms)
+#      retry:
+#        enabled: true          # 启用重试机制
+#        max-attempts: 3        # 最大重试次数
+#        backoff:
+#          initial-interval: 1000  # 初始间隔(ms)
+#          multiplier: 2.0      # 倍数递增
+#          max-interval: 10000  # 最大间隔(ms)
+
+mybatis-plus:
+  configuration:
+    #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    jdbc-type-for-null: null
+  global-config:
+    banner: false
+    enable-sql-runner: true
+    db-config:
+      id-type: ASSIGN_ID
+      logic-delete-field: DELETE_FLAG
+      logic-delete-value: DELETED
+      logic-not-delete-value: NOT_DELETE
+  mapper-locations: classpath*:com/huanniankj/*/mapping/*.xml,com/bstek/*/mapping/*.xml
+  type-handlers-package: com.huanniankj.common.handler
+
+logging:
+  level:
+    # Kafka相关日志控制
+    org.apache.kafka: WARN
+    kafka: WARN
+    org.apache.kafka.common.config: ERROR
+    org.apache.kafka.clients: WARN
+    org.springframework.kafka: WARN
+    # clickhouse相关日志控制
+    ru.yandex.clickhouse: WARN
+    com.clickhouse: WARN
+    com.clickhouse.jdbc: WARN
+    # 连接池相关日志
+    com.zaxxer.hikari: INFO
+
+easy-trans:
+  is-enable-redis: true
+  is-enable-global: true
+  is-enable-tile: true
+  is-enable-cloud: false
+
+sa-token:
+  token-name: token
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: false
+  max-login-count: -1
+  token-style: random-32
+  is-log: false
+  is-print: false
+  # sa-token alone-redis configuration
+  alone-redis:
+    database: 2
+    host: ${spring.data.redis.host}
+    port: ${spring.data.redis.port}
+    password: ${spring.data.redis.password}
+    timeout: ${spring.data.redis.timeout}
+    lettuce:
+      pool:
+        max-active: ${spring.data.redis.lettuce.pool.max-active}
+        max-wait: ${spring.data.redis.lettuce.pool.max-wait}
+        max-idle: ${spring.data.redis.lettuce.pool.max-idle}
+        min-idle: ${spring.data.redis.lettuce.pool.min-idle}
+
+knife4j:
+  enable: true
+  production: false
+  basic:
+    enable: true
+    username: admin
+    password: uba@test_
+  setting:
+    enableOpenApi: false
+    enableSwaggerModels: false
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Apache License 2.0 | Copyright 2025 [UBA](https://www.huanniankj.com)
+
+springdoc:
+  default-flat-param-object: true
+  # knife4j doc groups
+  group-configs:
+    - group: PLUGIN-AUTH
+      display-name: ${springdoc.group-configs[0].group}
+      packages-to-scan: com.huanniankj.auth
+    - group: PLUGIN-BIZ
+      display-name: ${springdoc.group-configs[1].group}
+      packages-to-scan: com.huanniankj.biz
+    - group: PLUGIN-CLIENT
+      display-name: ${springdoc.group-configs[2].group}
+      packages-to-scan: com.huanniankj.client
+    - group: PLUGIN-DEV
+      display-name: ${springdoc.group-configs[3].group}
+      packages-to-scan: com.huanniankj.dev
+    - group: PLUGIN-GEN
+      display-name: ${springdoc.group-configs[4].group}
+      packages-to-scan: com.huanniankj.gen
+    - group: PLUGIN-MOBILE
+      display-name: ${springdoc.group-configs[5].group}
+      packages-to-scan: com.huanniankj.mobile
+    - group: PLUGIN-SYS
+      display-name: ${springdoc.group-configs[6].group}
+      packages-to-scan: com.huanniankj.sys
+
+uba:
+  config:
+    common:
+      backend-url: http://localhost:82
+
+sms-oa:
+  config-type: yaml
+  core-pool-size: 20
+  queue-capacity: 20
+  max-pool-size: 20

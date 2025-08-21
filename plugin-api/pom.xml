@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.huanniankj</groupId>
+        <artifactId>uba</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>plugin-api</artifactId>
+    <packaging>pom</packaging>
+    <description>插件API接口模块</description>
+
+    <modules>
+        <!-- 登录鉴权插件api接口 -->
+        <module>plugin-auth-api</module>
+
+        <!-- 业务功能插件api接口 -->
+        <module>plugin-biz-api</module>
+
+        <!-- C端功能插件api接口 -->
+        <module>plugin-client-api</module>
+
+        <!-- 开发工具插件api接口 -->
+        <module>plugin-dev-api</module>
+
+        <!-- 代码生成插件api接口 -->
+        <module>plugin-gen-api</module>
+
+        <!-- 移动端管理插件api接口 -->
+        <module>plugin-mobile-api</module>
+
+        <!-- 系统功能插件api接口 -->
+        <module>plugin-sys-api</module>
+
+        <!-- 用户行为分析功能插件api接口 -->
+        <module>plugin-uba-api</module>
+    </modules>
+</project>

@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.huanniankj</groupId>
+    <artifactId>uba</artifactId>
+    <name>uba</name>
+    <version>1.0.0</version>
+    <description>UBA-用户行为分析系统</description>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.1</version>
+    </parent>
+
+    <properties>
+        <java.version>17</java.version>
+        <platform.version>1.0.0</platform.version>
+        <spring-boot.version>3.2.1</spring-boot.version>
+        <spring-framework.version>6.1.2</spring-framework.version>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <drools.version>10.1.0</drools.version>
+    </properties>
+
+    <modules>
+        <!-- 基础通用规则模块 -->
+        <module>common</module>
+        <!-- 插件模块 -->
+        <module>plugin</module>
+        <!-- 插件API接口模块 -->
+        <module>plugin-api</module>
+        <!-- 主启动模块 -->
+        <module>web-app</module>
+        <module>plugin/plugin-uba</module>
+        <module>plugin-api/plugin-uba-api</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- common -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>common</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-auth-api -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-auth-api</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-biz-api -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-biz-api</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-client-api -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-client-api</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-dev-api -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-dev-api</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-gen-api -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-gen-api</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-mobile-api -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-mobile-api</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-sys-api -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-sys-api</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-uba-api -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-uba-api</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-auth -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-auth</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-biz -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-biz</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-client -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-client</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-dev -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-dev</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-gen -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-gen</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-mobile -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-mobile</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-sys -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-sys</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- plugin-uba -->
+            <dependency>
+                <groupId>com.huanniankj</groupId>
+                <artifactId>plugin-uba</artifactId>
+                <version>${platform.version}</version>
+            </dependency>
+            <!-- nashorn-core -->
+            <dependency>
+                <groupId>org.openjdk.nashorn</groupId>
+                <artifactId>nashorn-core</artifactId>
+                <version>15.4</version>
+            </dependency>
+            <!-- lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>
+            </dependency>
+            <!-- druid -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-3-starter</artifactId>
+                <version>1.2.21</version>
+            </dependency>
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>3.5.5</version>
+            </dependency>
+            <!-- easy-trans -->
+            <dependency>
+                <groupId>com.fhs-opensource</groupId>
+                <artifactId>easy-trans-spring-boot-starter</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <!-- easy-trans-mybatis-plus-extend -->
+            <dependency>
+                <groupId>com.fhs-opensource</groupId>
+                <artifactId>easy-trans-mybatis-plus-extend</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <!-- redis -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>2.12.0</version>
+            </dependency>
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>5.8.25</version>
+            </dependency>
+            <!-- pinyin4j -->
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>2.5.1</version>
+            </dependency>
+            <!-- ip2region -->
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>2.7.0</version>
+            </dependency>
+            <!-- knife4j -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+                <version>4.5.0</version>
+            </dependency>
+            <!-- easy-poi -->
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-spring-boot-starter</artifactId>
+                <version>4.4.0</version>
+            </dependency>
+            <!-- sm-crypto -->
+            <dependency>
+                <groupId>com.antherd</groupId>
+                <artifactId>sm-crypto</artifactId>
+                <version>0.3.2</version>
+            </dependency>
+            <!-- easyexcel -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>3.3.3</version>
+            </dependency>
+            <!-- json-flattener -->
+            <dependency>
+                <groupId>com.github.wnameless.json</groupId>
+                <artifactId>json-flattener</artifactId>
+                <version>0.16.4</version>
+            </dependency>
+            <!-- sa-token-core -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-core</artifactId>
+                <version>1.37.0</version>
+            </dependency>
+            <!-- sa-token -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot3-starter</artifactId>
+                <version>1.37.0</version>
+            </dependency>
+            <!-- sa-token 整合 redis （使用jackson序列化方式） -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-redis-jackson</artifactId>
+                <version>1.37.0</version>
+            </dependency>
+            <!-- Sa-Token插件：权限缓存与业务缓存分离 -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-alone-redis</artifactId>
+                <version>1.37.0</version>
+            </dependency>
+            <!-- Sa-Token 插件：整合SSO -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-sso</artifactId>
+                <version>1.37.0</version>
+            </dependency>
+            <!-- JustAuth 第三方登录 -->
+            <dependency>
+                <groupId>me.zhyd.oauth</groupId>
+                <artifactId>JustAuth</artifactId>
+                <version>1.16.6</version>
+            </dependency>
+            <!-- beetl模板引擎 -->
+            <dependency>
+                <groupId>com.ibeetl</groupId>
+                <artifactId>beetl-framework-starter</artifactId>
+                <version>1.2.40.Beetl.RELEASE</version>
+            </dependency>
+            <!--x-file-storage文件sdk-->
+            <dependency>
+                <groupId>org.dromara.x-file-storage</groupId>
+                <artifactId>x-file-storage-spring</artifactId>
+                <version>2.1.0</version>
+            </dependency>
+            <!--腾讯云文件sdk-->
+            <dependency>
+                <groupId>com.qcloud</groupId>
+                <artifactId>cos_api</artifactId>
+                <version>5.6.199</version>
+            </dependency>
+            <!--阿里云文件sdk-->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>3.15.1</version>
+            </dependency>
+            <!--minio文件sdk-->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>8.5.2</version>
+            </dependency>
+            <!--java邮件sdk-->
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>1.5.4</version>
+            </dependency>
+            <!--阿里云邮件sdk-->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>dm20151123</artifactId>
+                <version>1.0.6</version>
+            </dependency>
+            <!-- 腾讯云邮件sdk -->
+            <dependency>
+                <groupId>com.tencentcloudapi</groupId>
+                <artifactId>tencentcloud-sdk-java-ses</artifactId>
+                <version>3.1.944</version>
+            </dependency>
+            <!-- sms4j短信sdk -->
+            <dependency>
+                <groupId>org.dromara.sms4j</groupId>
+                <artifactId>sms4j-javase-plugin</artifactId>
+                <version>3.3.4</version>
+            </dependency>
+            <!-- sms4j消息推送sdk -->
+            <dependency>
+                <groupId>org.dromara.sms4j</groupId>
+                <artifactId>sms4j-oa-core</artifactId>
+                <version>3.3.4</version>
+            </dependency>
+            <!--系统硬件信息-->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>6.4.11</version>
+            </dependency>
+            <!-- junit -->
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>5.10.1</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- dynamic-datasource -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+                <version>4.3.1</version>
+            </dependency>
+            <!-- mysql -->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>8.3.0</version>
+            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.apache.kafka</groupId>-->
+<!--                <artifactId>kafka-clients</artifactId>-->
+<!--                <version>4.0.0</version>-->
+<!--            </dependency>-->
+            <!-- fastjson2 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>2.0.57</version>
+            </dependency>
+            <!-- clickHouse JDBC -->
+            <dependency>
+                <groupId>com.clickhouse</groupId>
+                <artifactId>clickhouse-jdbc</artifactId>
+                <version>0.9.0</version>
+            </dependency>
+            <!-- 规则引擎 -->
+            <!-- Drools 核心依赖 -->
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-core</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-compiler</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-mvel</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-model-compiler</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <!-- KIE API -->
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-api</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-internal</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <!-- MVEL 依赖 -->
+            <dependency>
+                <groupId>org.mvel</groupId>
+                <artifactId>mvel2</artifactId>
+                <version>2.4.14.Final</version>
+            </dependency>
+            <!-- IP数据库 -->
+            <dependency>
+                <groupId>com.maxmind.geoip2</groupId>
+                <artifactId>geoip2</artifactId>
+                <version>4.0.1</version>
+            </dependency>
+            <!-- UserAgent数据库 -->
+            <dependency>
+                <groupId>com.github.ua-parser</groupId>
+                <artifactId>uap-java</artifactId>
+                <version>1.6.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>_sql/*</exclude>
+                    <exclude>*.md</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.ttf</include>
+                    <include>**/*.ttc</include>
+                    <include>**/*.TTF</include>
+                    <include>**/*.TTC</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+</project>

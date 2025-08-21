@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.huanniankj</groupId>
+        <artifactId>uba</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>web-app</artifactId>
+    <packaging>jar</packaging>
+    <description>主启动模块</description>
+
+    <dependencies>
+
+        <!-- test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- dynamic-datasource -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+        </dependency>
+
+        <!-- mysql -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 登录鉴权插件 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-auth</artifactId>
+        </dependency>
+
+        <!-- 业务功能插件 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-biz</artifactId>
+        </dependency>
+
+        <!-- C端功能插件 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-client</artifactId>
+        </dependency>
+
+        <!-- 开发工具插件 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-dev</artifactId>
+        </dependency>
+
+        <!-- 代码生成插件 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-gen</artifactId>
+        </dependency>
+
+        <!-- 移动端管理插件 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-mobile</artifactId>
+        </dependency>
+
+        <!-- 用户行为分析功能插件 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-uba</artifactId>
+        </dependency>
+
+        <!-- 系统功能插件 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-sys</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

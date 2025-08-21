@@ -1,0 +1,100 @@
+<template>
+    <%
+    var searchCount = 0;
+    var row = 0;
+    %>
+    <% for(var i = 0; i < configList.~size; i++) { %>
+       <% if(!configList[i].needTableId && configList[i].needPage) { searchCount ++; }%>
+    <% } %>
+    <uni-popup ref="popRef" type="bottom" background-color="transparent" maskBackgroundColor="rgba(0, 0, 0, 0.6)">
+        <view class="system-shadow system-padding">
+            <view class="system-flex-end">
+            	<icon type="clear" :size="20" color="#5677fc" @click="close"></icon>
+            </view>
+            <% if (searchCount > 0) { %>
+            <uni-forms ref="formRef" :model="searchFormData" label-position="top" labelWidth="auto">
+                <% for(var i = 0; i < configList.~size; i++) { %>
+                <% if(!configList[i].needTableId && configList[i].needPage) { %>
+                <% if(configList[i].effectType == 'input' || configList[i].effectType == 'textarea') { %>
+                <uni-forms-item label="${configList[i].fieldRemark}" name="${configList[i].fieldNameCamelCase}">
+                    <uni-easyinput v-model="searchFormData.${configList[i].fieldNameCamelCase}" placeholder="请输入${configList[i].fieldRemark}"></uni-easyinput>
+                </uni-forms-item>
+                <% } else if (configList[i].effectType == 'select' || configList[i].effectType == 'radio' || configList[i].effectType == 'checkbox') {%>
+                <uni-forms-item label="${configList[i].fieldRemark}" name="${configList[i].fieldNameCamelCase}">
+                	<system-sel-picker :map="{key: 'value', label: 'text'}" v-model="searchFormData.${configList[i].fieldNameCamelCase}" :rangeData="${configList[i].fieldNameCamelCase}Options" placeholder="请选择${configList[i].fieldRemark}"></system-sel-picker>
+                </uni-forms-item>
+                <% } else if (configList[i].effectType == 'inputNumber' || configList[i].effectType == 'slider') {%>
+                <uni-forms-item label="${configList[i].fieldRemark}" name="${configList[i].fieldNameCamelCase}">
+                    <uni-number-box v-model="searchFormData.${configList[i].fieldNameCamelCase}" placeholder="请输入${configList[i].fieldRemark}"/>
+                </uni-forms-item>
+                <% } else if (configList[i].effectType == 'datepicker') {%>
+                <uni-forms-item label="${configList[i].fieldRemark}" name="${configList[i].fieldNameCamelCase}">
+                    <uni-datetime-picker v-model="searchFormData.${configList[i].fieldNameCamelCase}" type="datetimerange"/>
+                </uni-forms-item>
+                <% } else {%>
+                <uni-forms-item label="${configList[i].fieldRemark}" name="${configList[i].fieldNameCamelCase}">
+                    <uni-easyinput v-model="searchFormData.${configList[i].fieldNameCamelCase}" placeholder="请输入${configList[i].fieldRemark}"></uni-easyinput>
+                </uni-forms-item>
+                <% } %>
+                <% } %>
+                <% } %>
+            </uni-forms>
+            <% } %>
+            <uni-row :gutter="10">
+                <uni-col :span="12">
+                    <tui-button height="90rpx" type="gray" @click="reset">重置</tui-button>
+            	</uni-col>
+            	<uni-col :span="12">
+                    <tui-button height="90rpx" type="primary" @click="confirm">确认</tui-button>
+            	</uni-col>
+            </uni-row>
+        </view>
+    </uni-popup>
+</template>
+<script setup name="${classNameFirstLower}Search">
+    import { ref } from "vue"
+    const emits = defineEmits(['reset', 'confirm'])
+    const props = defineProps({
+    	searchFormData: {
+            type: Object,
+            required: true
+    	},
+    })
+    <% if (searchCount > 0) { %>
+    <% for(var i = 0; i < configList.~size; i++) { %>
+    <% if(!configList[i].needTableId && configList[i].needPage) { %>
+    <% if (configList[i].effectType == 'select' || configList[i].effectType == 'radio' || configList[i].effectType == 'checkbox') { %>
+    const ${configList[i].fieldNameCamelCase}Options = uni.$uba.tool.dictList('${configList[i].dictTypeCode}')
+    <% } %>
+    <% } %>
+    <% } %>
+    <% } %>
+
+    // 弹出ref
+    const popRef = ref()
+    // 打开
+    const open = () => {
+    	popRef.value.open()
+    }
+    const reset = () =>{
+        // 重置数据
+        <% for(var i = 0; i < configList.~size; i++) { %>
+        <% if(!configList[i].needTableId && configList[i].needPage) { %>
+        props.searchFormData.${configList[i].fieldNameCamelCase} = ''
+        <% } %>
+        <% } %>
+    	emits('reset', props.searchFormData)
+    }
+    const confirm = () => {
+    	popRef.value.close()
+    	emits('confirm', props.searchFormData)
+    }
+    const close = () => {
+    	popRef.value.close()
+    }
+    defineExpose({
+    	open
+    })
+</script>
+<style lang="scss" scoped>
+</style>

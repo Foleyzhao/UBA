@@ -1,0 +1,99 @@
+<template>
+    <%
+    var searchCount = 0;
+    var row = 0;
+    %>
+    <% for(var i = 0; i < configList.~size; i++) { %>
+        <% if(!configList[i].needTableId && configList[i].needPage) { searchCount ++; }%>
+    <% } %>
+    <view>
+        <z-paging ref="dataPagingRef" :fixed="true" use-virtual-list :force-close-inner-list="true" cell-height-mode="dynamic" @virtualListChange="virtualListChange" @query="loadData" :auto="true">
+            <template #top>
+                <% if (searchCount > 0) { %>
+                <% for(var i = 0; i < configList.~size; i++) { %>
+                <% if(!configList[i].needTableId && configList[i].needPage) { row ++; %>
+                <% if(row <= 1) { %>
+                <view class="system-z-paging-item">
+                    <system-search placeholder="请输入${configList[i].fieldRemark}" v-model="searchFormData.${configList[i].fieldNameCamelCase}" @confirm="$refs.dataPagingRef.reload()" @clear="$refs.dataPagingRef.reload()" :seniorEnable="true" @seniorSearch="$refs.searchRef.open()"></system-search>
+                </view>
+                <% } %>
+                <% } %>
+                <% } %>
+                <search ref="searchRef" :searchFormData="searchFormData" @confirm="$refs.dataPagingRef.reload()"></search>
+                <% } %>
+            </template>
+            <view class="system-shadow system-z-paging-item system-padding system-hover" v-for="(item, index) in ${classNameFirstLower}Data" :key="index" @tap="moreTapItem(item, index)">
+                <% for(var i = 0; i < configList.~size; i++) { %>
+                <% if(!configList[i].needTableId && configList[i].whetherTable && configList[i].fieldNameCamelCase != 'tenantId') { %>
+                <uni-row class="item-uni-row">
+                    <uni-col :span="2">
+                        <uni-icons size="18" type="paperclip" color="#5677fc"></uni-icons>
+                    </uni-col>
+                    <uni-col :span="10">
+                        <view class="system-sub-title">${configList[i].fieldRemark}</view>
+                    </uni-col>
+                    <uni-col :span="12">
+                        <view class="system-text-right system-text-bold system-text-ellipsis"> {{ item.${configList[i].fieldNameCamelCase} }} </view>
+                    </uni-col>
+                </uni-row>
+                <% } %>
+                <% } %>
+            </view>
+        </z-paging>
+        <system-float-btn v-if="$uba.hasPerm('mobile${className}Add')" @click="add"></system-float-btn>
+        <more ref="moreRef" @handleOk="loadData(true)"></more>
+    </view>
+</template>
+
+<script setup name="${busName}">
+    <% if (searchCount > 0) { %>
+    import search from './search.vue'
+    <% } %>
+    import ${classNameFirstLower}Api from '@/api/${moduleName}/${classNameLowerKebab}-api'
+    import more from './more.vue'
+    import { onLoad, onShow, onReady, onPullDownRefresh, onReachBottom } from "@dcloudio/uni-app"
+    import { reactive, ref, getCurrentInstance, nextTick } from "vue"
+
+    const { proxy } = getCurrentInstance()
+    const dataPagingRef = ref()
+    const searchFormData = ref({})
+    const ${classNameFirstLower}Data = ref([])
+    const virtualListChange = (vList) => {
+        ${classNameFirstLower}Data.value = vList
+    }
+    const loadData = async (pageNo, pageSize) => {
+        const parameter = {
+            current: pageNo,
+            size: pageSize
+        }
+        Object.assign(parameter, searchFormData.value)
+        const data = await ${classNameFirstLower}Api.${classNameFirstLower}Page(parameter)
+        dataPagingRef.value.complete(data?.records)
+    }
+    onShow(() => {
+        uni.$once('formBack', (data) => {
+            nextTick(() => {
+            	dataPagingRef.value.reload()
+            })
+        })
+    })
+    // 新增
+    const add = () => {
+        uni.navigateTo({
+            url: '/pages/${moduleName}/${busName}/form'
+        })
+    }
+    // 更多操作
+    const moreRef = ref()
+    const moreTapItem = (item, index) => {
+        moreRef.value.open(item)
+    }
+</script>
+
+<style lang="scss" scoped>
+    @import '@/static/scss/index.scss';
+    ::v-deep .uni-row {
+        @extend .system-flex-v-center;
+        padding: 5rpx;
+    }
+</style>

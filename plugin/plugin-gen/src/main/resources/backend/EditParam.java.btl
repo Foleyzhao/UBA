@@ -1,0 +1,38 @@
+package ${packageName}.${moduleName}.modular.${busName}.param;
+
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.format.DateTimeFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * ${functionName}编辑参数
+ *
+ * @author ${authorName}
+ */
+@Getter
+@Setter
+public class ${className}EditParam {
+
+    <% for(var i = 0; i < configList.~size; i++) { %>
+    <% if(configList[i].needEdit) { %>
+    /** ${configList[i].fieldRemark} */
+    <% if(configList[i].fieldJavaType == 'Date') { %>
+    @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
+    <% } else { %><% } %>
+    @ExcelProperty("${configList[i].fieldRemark}")
+    @Schema(description = "${configList[i].fieldRemark}"<% if(configList[i].required) { %>, requiredMode = Schema.RequiredMode.REQUIRED<% } %>)
+    <% if(configList[i].required) { %>
+    <% if(configList[i].fieldJavaType == 'String') { %>@NotBlank<% } else { %>@NotNull<% } %>(message = "${configList[i].fieldNameCamelCase}不能为空")
+    <% } else { %><% } %>
+    private ${configList[i].fieldJavaType} ${configList[i].fieldNameCamelCase};
+
+    <% } %>
+    <% } %>
+}

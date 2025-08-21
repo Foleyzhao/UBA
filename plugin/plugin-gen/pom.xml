@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.huanniankj</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>plugin-gen</artifactId>
+    <packaging>jar</packaging>
+    <description>代码生成插件</description>
+
+    <dependencies>
+        <!-- 每个插件都要引入自己的对外接口 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-gen-api</artifactId>
+        </dependency>
+
+        <!-- 引入系统接口，用于菜单生成等功能 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-sys-api</artifactId>
+        </dependency>
+
+        <!-- 引入移动端接口，用于选择模块功能 -->
+        <dependency>
+            <groupId>com.huanniankj</groupId>
+            <artifactId>plugin-mobile-api</artifactId>
+        </dependency>
+
+        <!-- beetl模板引擎 -->
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetl-framework-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>

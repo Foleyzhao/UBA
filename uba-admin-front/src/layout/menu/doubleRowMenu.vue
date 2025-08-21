@@ -1,0 +1,233 @@
+<template>
+	<a-layout>
+		<a-layout-sider v-if="!isMobile" width="80" :theme="sideTheme" :trigger="null" collapsible
+						v-show="displayLayout">
+			<header id="systemHeaderLogo" class="system-header-logo">
+				<div class="system-header-left">
+					<div class="logo-bar">
+						<router-link to="/">
+							<img class="logo" :title="sysBaseConfig.SYSTEM_SYS_NAME"
+								 :src="sysBaseConfig.SYSTEM_SYS_LOGO"/>
+						</router-link>
+					</div>
+				</div>
+			</header>
+			<a-menu
+				:selectedKeys="doublerowSelectedKey"
+				:theme="sideTheme"
+				class="system-doublerow-layout-menu"
+				v-for="item in menu"
+				:key="item.path"
+			>
+				<a-menu-item
+					:key="item.path"
+					style="
+						text-align: center;
+						height: auto;
+						line-height: 20px;
+						flex: none;
+						display: block;
+						padding: 12px 0 !important;
+					"
+					@click="showMenu(item)"
+					v-if="!item.meta.hidden"
+				>
+					<a v-if="item.meta && item.meta.type === 'link'" :href="item.path" target="_blank"
+					   @click.stop="() => {}"/>
+					<template #icon>
+						<component :is="item.meta.icon" class="sys-pl10"/>
+					</template>
+					<div class="system-doublerow-layout-menu-item-fort-div">
+						<span class="system-doublerow-layout-menu-item-fort-div-span">
+							{{ item.meta.title }}
+						</span>
+					</div>
+				</a-menu-item>
+			</a-menu>
+		</a-layout-sider>
+		<!-- 手机端情况下的左侧菜单 -->
+		<Side-m v-if="isMobile" v-show="displayLayout"/>
+		<a-layout>
+			<div id="systemHeader" class="system-header" v-show="displayLayout">
+				<div class="system-header-left sys-pl0">
+					<moduleMenu v-if="moduleMenuShow" @switchModule="switchModule"/>
+				</div>
+				<div class="system-header-right">
+					<user-bar/>
+				</div>
+			</div>
+			<a-layout>
+				<div v-show="displayLayout"></div>
+				<a-layout-sider
+					v-if="!isMobile"
+					v-show="displayLayout && layoutSiderDowbleMenu"
+					:collapsed="menuIsCollapse"
+					:trigger="null"
+					width="170"
+					collapsible
+					:theme="secondMenuSideTheme"
+				>
+					<a-menu
+						:collapsed="menuIsCollapse"
+						:openKeys="openKeys"
+						:selectedKeys="selectedKeys"
+						mode="inline"
+						:theme="secondMenuSideTheme"
+						@select="onSelect"
+					>
+						<NavMenu :nav-menus="nextMenu"/>
+					</a-menu>
+				</a-layout-sider>
+				<a-layout-content>
+					<breadcrumb v-if="!isMobile && breadcrumbOpen" v-show="displayLayout"/>
+					<!-- 多标签 -->
+					<Tags v-if="!isMobile && layoutTagsOpen" v-show="displayLayout"/>
+					<div
+						:class="displayLayout ? 'main-content-wrapper' : 'main-content-wrapper main-content-wrapper-max'">
+						<div id="admin-ui-main" class="admin-ui-main">
+							<router-view v-slot="{ Component }">
+								<keep-alive :include="kStore.keepLiveRoute">
+									<component :is="Component" v-if="kStore.routeShow" :key="route.name"/>
+								</keep-alive>
+							</router-view>
+							<iframe-view/>
+							<div v-if="footerCopyrightOpen" class="main-bottom-wrapper">
+								<a class="sys-color-a0a0a0" :href="sysBaseConfig.SYSTEM_SYS_COPYRIGHT_URL"
+								   target="_blank">{{
+										sysBaseConfig.SYSTEM_SYS_COPYRIGHT
+									}}</a>
+							</div>
+						</div>
+					</div>
+				</a-layout-content>
+			</a-layout>
+		</a-layout>
+	</a-layout>
+</template>
+
+<script setup>
+import {useRoute} from 'vue-router'
+import UserBar from '@/layout/components/userbar.vue'
+import Tags from '@/layout/components/tags.vue'
+import SideM from '@/layout/components/sideM.vue'
+import NavMenu from '@/layout/components/NavMenu.vue'
+import ModuleMenu from '@/layout/components/moduleMenu.vue'
+import IframeView from '@/layout/components/iframeView.vue'
+import Breadcrumb from '@/layout/components/breadcrumb.vue'
+
+const props = defineProps({
+	layout: {type: String}, // 布局信息
+	isMobile: {type: Boolean}, // 是否移动端
+	sideTheme: {type: String},
+	menuIsCollapse: {},
+	sysBaseConfig: {type: Object},
+	openKeys: {type: Array},
+	selectedKeys: {type: Array},
+	doublerowSelectedKey: {type: Array},
+	nextMenu: {type: Array},
+	menu: {type: Array}, // 菜单
+	breadcrumbOpen: {type: Boolean}, //面包屑
+	layoutTagsOpen: {type: Boolean},
+	layoutSiderDowbleMenu: {type: Boolean},
+	kStore: {type: Object}, // 获取的仓库数据
+	footerCopyrightOpen: {type: Boolean}, //页脚版权信息
+	moduleMenuShow: {type: Boolean},
+	secondMenuSideTheme: {}
+})
+const emit = defineEmits(['onSelect', 'switchModule', 'showMenu', 'displayLayoutChange'])
+const displayLayout = ref(true)
+const route = useRoute()
+watch(route, () => {
+	nextTick(() => {
+		displayLayout.value = displayLayoutResult()
+	})
+	if (displayLayout.value) {
+		emit('displayLayoutChange')
+	}
+})
+onMounted(() => {
+	nextTick(() => {
+		displayLayout.value = displayLayoutResult()
+	})
+})
+const displayLayoutResult = () => {
+	// 根据route.meta.keepLive动态管理keepLiveRoute
+	if (route.meta.keepLive === true) {
+		props.kStore.pushKeepLive(route.name)
+	} else {
+		props.kStore.removeKeepLive(route.name)
+	}
+	if (
+		route.meta.displayLayout === undefined ||
+		route.meta.displayLayout === null ||
+		route.meta.displayLayout === 'null'
+	) {
+		return true
+	} else {
+		return route.meta.displayLayout
+	}
+}
+const onSelect = (obj) => {
+	emit('onSelect', obj)
+}
+const switchModule = (id) => {
+	emit('switchModule', id)
+}
+const showMenu = (route) => {
+	emit('showMenu', route)
+}
+</script>
+<style lang="less" scoped>
+.sys-color-fff {
+	color: #fff;
+}
+
+.sys-pdl25 {
+	padding-left: 11px;
+}
+
+.sys-menu-line {
+	text-align: center;
+	height: auto;
+	line-height: 20px;
+	flex: none;
+	display: block;
+	padding: 12px 0 !important;
+}
+
+.sys-navmenu-line {
+	min-width: 0;
+	flex: 1 1 0%;
+	overflow: hidden;
+}
+
+.sys-bb0 {
+	border-bottom: none;
+	position: relative;
+}
+
+.ant-layout-content {
+	display: flex;
+	flex-direction: column;
+}
+
+.sys-pd1180 {
+	padding: 10px 150px 0 150px;
+}
+
+.sys-pd050 {
+	padding: 0 50px;
+}
+
+.sys-pl10 {
+	padding-left: 10px;
+}
+
+.sys-mg050 {
+	margin: 0px 150px;
+}
+
+.main-content-wrapper-max {
+	padding: 0;
+}
+</style>

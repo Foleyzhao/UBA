@@ -1,0 +1,22 @@
+package ${packageName}.${moduleName}.modular.${busName}.param;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+
+import jakarta.validation.constraints.NotBlank;
+
+/**
+ * ${functionName}Id参数
+ *
+ * @author ${authorName}
+ */
+@Getter
+@Setter
+public class ${className}IdParam {
+
+    /** ${dbTableKeyRemark} */
+    @Schema(description = "${dbTableKeyRemark}", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "${dbTableKeyCamelCase}不能为空")
+    private ${dbTableKeyJavaType} ${dbTableKeyCamelCase};
+}

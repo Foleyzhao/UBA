@@ -1,0 +1,21 @@
+package ${packageName}.${moduleName}.modular.${busName}.enums;
+
+import lombok.Getter;
+
+/**
+ * ${functionName}枚举
+ *
+ * @author ${authorName}
+ */
+@Getter
+public enum ${className}Enum {
+
+    /** 测试 */
+    TEST("TEST");
+
+    private final String value;
+
+    ${className}Enum(String value) {
+        this.value = value;
+    }
+}

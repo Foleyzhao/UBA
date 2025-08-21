@@ -1,0 +1,208 @@
+.login-icon-gray {
+	color: rgba(0, 0, 0, 0.25);
+}
+
+.login-validCode-img {
+	border: 1px solid var(--border-color-split);
+	cursor: pointer;
+	width: 100%;
+	height: 40px;
+}
+
+.login-wrapper {
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	background-color: #fff;
+	display: flex;
+}
+
+.login_background {
+	width: 50%;
+	height: 100%;
+	overflow: hidden;
+	background-size: cover;
+	background-position: center;
+	background-image: url(/img/login_background.png);
+	position: relative;
+}
+
+@keyframes myfirst {
+	0% {
+		left: 0;
+		top: 0;
+	}
+	50% {
+		left: 50px;
+		top: 0;
+	}
+	100% {
+		left: 0;
+		top: 0;
+	}
+}
+
+@-webkit-keyframes myfirst {
+	0% {
+		left: 0;
+		top: 0;
+	}
+	50% {
+		left: 50px;
+		top: 0;
+	}
+	100% {
+		left: 0;
+		top: 0;
+	}
+}
+
+.login_adv__title h2 {
+	font-size: 40px;
+}
+
+.login_adv__title h4 {
+	font-size: 18px;
+	margin-top: 10px;
+	font-weight: normal;
+}
+
+.login_adv__title p {
+	font-size: 14px;
+	margin-top: 10px;
+	line-height: 1.8;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.login_adv__title div {
+	margin-top: 10px;
+	display: flex;
+	align-items: center;
+}
+
+.login_adv__title div span {
+	margin-right: 15px;
+}
+
+.login_adv__title div i {
+	font-size: 40px;
+}
+
+.login_adv__title div i.add {
+	font-size: 20px;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+/*background-image:linear-gradient(transparent, #000);*/
+.login_main {
+	width: 50%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.login-form {
+	width: 450px;
+	margin-top: 110px;
+}
+
+.login-header {
+	margin-bottom: 20px;
+}
+
+.login-header h2 {
+	font-size: 24px;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
+.login_config {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+}
+
+.logo_background {
+	position: absolute;
+	left: 0;
+	top: 50px;
+	height: 60px;
+	padding-left: 56px;
+	width: 100%;
+	background: linear-gradient(120deg, rgb(255 255 255 / 90%), rgba(255, 255, 255, 0));
+	display: flex;
+	align-items: center;
+}
+
+.logo_background a {
+	text-decoration: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.logo_background a.no-link,
+.logo_background a.no-link label {
+	cursor: default;
+}
+
+.logo_background img {
+	height: 40px;
+	margin-right: 10px;
+}
+
+.logo_background a label {
+	font-size: 24px;
+	color: #fff;
+	cursor: pointer;
+}
+
+.login_background .version {
+	width: 100%;
+	font-size: 14px;
+	color: #fff;
+	font-weight: 300;
+	padding: 0 56px;
+	box-sizing: border-box;
+	position: absolute;
+	bottom: 12px;
+}
+
+.login_background .version p {
+	line-height: 22px;
+	text-align: center;
+	margin-bottom: 6px;
+}
+
+@media (max-width: 1200px) {
+	.login-form {
+		width: 340px;
+	}
+}
+
+@media (max-width: 1000px) {
+	.login_main {
+		width: 100%;
+		position: absolute;
+		left: 0;
+		right: 0;
+	}
+
+	.login-form {
+		width: 100%;
+		padding: 20px 40px;
+		top: 15%
+	}
+
+	.logo_background {
+		padding-left: 40px;
+	}
+
+	.login_background .version {
+		padding: 0 20px;
+	}
+
+	.login_background .version p:first-child {
+		display: none;
+	}
+}

@@ -1,0 +1,12 @@
+package ${packageName}.${moduleName}.modular.${busName}.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import ${packageName}.${moduleName}.modular.${busName}.entity.${className};
+
+/**
+ * ${functionName}Mapper接口
+ *
+ * @author ${authorName}
+ */
+public interface ${className}Mapper extends BaseMapper<${className}> {
+}

@@ -1,0 +1,34 @@
+import {baseRequest} from '@/utils/request'
+
+const request = (url, ...arg) => baseRequest(`/uba/user/` + url, ...arg)
+/**
+ * 运营用户接口api
+ *
+ * @author happynewyear
+ */
+export default {
+	// 获取运营用户分页
+	userPage(data) {
+		return request('page', data, 'get')
+	},
+	// 提交表单 edit为true时为编辑，默认为新增
+	submitForm(data, edit = false) {
+		return request(edit ? 'edit' : 'add', data)
+	},
+	// 删除运营用户
+	userDelete(data) {
+		return request('delete', data)
+	},
+	// 获取运营用户详情
+	userDetail(data) {
+		return request('detail', data, 'get')
+	},
+	// 禁用运营用户
+	userDisableUser(data) {
+		return request('disableUser', data)
+	},
+	// 启用运营用户
+	userEnableUser(data) {
+		return request('enableUser', data)
+	},
+}
