@@ -1,22 +1,21 @@
-package com.huanniankj.uba.modular.dict.entity;
+package com.huanniankj.uba.modular.rule.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.huanniankj.common.pojo.CommonEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 数据处理字典实体
+ * 数据清洗规则项实体
  *
  * @author happynewyear
  */
 @Getter
 @Setter
-@TableName("DEV_DICT")
-public class Dict extends CommonEntity {
+@TableName("UBA_RULE_ITEM")
+public class RuleItem {
 
     /**
      * id
@@ -25,34 +24,34 @@ public class Dict extends CommonEntity {
     private String id;
 
     /**
-     * 父id
+     * 规则ID
      */
-    @Schema(description = "父id")
-    private String parentId;
+    @Schema(description = "规则ID")
+    private String ruleId;
 
     /**
-     * 字典文字
+     * 状态
      */
-    @Schema(description = "字典文字")
-    private String dictLabel;
+    @Schema(description = "状态")
+    private String status;
 
     /**
-     * 字典值
+     * 规则内容
      */
-    @Schema(description = "字典值")
-    private String dictValue;
+    @Schema(description = "规则项内容")
+    private String content;
+
+    /**
+     * 规则结果
+     */
+    @Schema(description = "规则项结果")
+    private String result;
 
     /**
      * 编码
      */
     @Schema(description = "编码")
     private String code;
-
-    /**
-     * 分类
-     */
-    @Schema(description = "分类")
-    private String category;
 
     /**
      * 排序码
@@ -66,4 +65,5 @@ public class Dict extends CommonEntity {
     @Schema(description = "扩展信息")
     @TableField(insertStrategy = FieldStrategy.ALWAYS, updateStrategy = FieldStrategy.ALWAYS)
     private String extJson;
+
 }

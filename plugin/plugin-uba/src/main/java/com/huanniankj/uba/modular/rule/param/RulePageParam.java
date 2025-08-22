@@ -1,17 +1,17 @@
-package com.huanniankj.uba.modular.dict.param;
+package com.huanniankj.uba.modular.rule.param;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 数据处理字典查询参数
+ * 数据清洗规则查询参数
  *
  * @author happynewyear
  */
 @Getter
 @Setter
-public class DictPageParam {
+public class RulePageParam {
 
     /**
      * 当前页
@@ -38,20 +38,15 @@ public class DictPageParam {
     private String sortOrder;
 
     /**
-     * 父id
+     * 分类
      */
-    @Schema(description = "父id")
-    private String parentId;
-
-    /**
-     * 字典分类
-     */
-    @Schema(description = "字典分类")
+    @Schema(description = "分类")
     private String category;
 
     /**
-     * 字典文字关键词
+     * 关键词
      */
-    @Schema(description = "字典文字关键词")
+    @Schema(description = "关键词")
     private String searchKey;
+
 }
