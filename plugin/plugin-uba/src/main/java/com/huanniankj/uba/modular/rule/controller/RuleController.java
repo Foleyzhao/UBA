@@ -62,7 +62,7 @@ public class RuleController {
     /**
      * 添加数据清洗规则
      */
-    @ApiOperationSupport(order = 4)
+    @ApiOperationSupport(order = 3)
     @Operation(summary = "添加数据清洗规则")
     @CommonLog("添加数据处理字典")
     @PostMapping("/uba/rule/add")
@@ -74,7 +74,7 @@ public class RuleController {
     /**
      * 编辑数据清洗规则
      */
-    @ApiOperationSupport(order = 5)
+    @ApiOperationSupport(order = 4)
     @Operation(summary = "编辑数据清洗规则")
     @CommonLog("编辑数据清洗规则")
     @PostMapping("/uba/rule/edit")
@@ -86,7 +86,7 @@ public class RuleController {
     /**
      * 删除数据清洗规则
      */
-    @ApiOperationSupport(order = 6)
+    @ApiOperationSupport(order = 5)
     @Operation(summary = "删除数据清洗规则")
     @CommonLog("删除数据清洗规则")
     @PostMapping("/uba/rule/delete")
@@ -99,7 +99,7 @@ public class RuleController {
     /**
      * 获取数据清洗规则详情
      */
-    @ApiOperationSupport(order = 7)
+    @ApiOperationSupport(order = 6)
     @Operation(summary = "获取数据清洗规则详情")
     @GetMapping("/uba/rule/detail")
     public CommonResult<Rule> detail(@Valid RuleIdParam ruleIdParam) {

@@ -5,18 +5,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 数据清洗规则列表参数
+ * 数据清洗规则项列表参数
  *
  * @author happynewyear
  */
 @Getter
 @Setter
-public class RuleListParam {
+public class RuleItemListParam {
 
     /**
-     * 分类
+     * 规则ID
      */
-    @Schema(description = "分类")
-    private String category;
+    @Schema(description = "规则ID")
+    private String ruleId;
 
 }
