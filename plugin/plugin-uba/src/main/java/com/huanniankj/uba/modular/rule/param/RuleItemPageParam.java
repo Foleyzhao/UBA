@@ -43,10 +43,4 @@ public class RuleItemPageParam {
     @Schema(description = "规则ID")
     private String ruleId;
 
-    /**
-     * 关键词
-     */
-    @Schema(description = "关键词")
-    private String searchKey;
-
 }

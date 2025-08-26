@@ -47,10 +47,6 @@ public class RuleItemServiceImpl extends ServiceImpl<RuleItemMapper, RuleItem> i
         if (ObjectUtil.isNotEmpty(ruleItemPageParam.getRuleId())) {
             queryWrapper.lambda().eq(RuleItem::getRuleId, ruleItemPageParam.getRuleId());
         }
-        if (ObjectUtil.isNotEmpty(ruleItemPageParam.getSearchKey())) {
-            queryWrapper.lambda().like(RuleItem::getContent, ruleItemPageParam.getSearchKey())
-                    .or().like(RuleItem::getResult, ruleItemPageParam.getSearchKey());
-        }
         if (ObjectUtil.isAllNotEmpty(ruleItemPageParam.getSortField(), ruleItemPageParam.getSortOrder())) {
             CommonSortOrderEnum.validate(ruleItemPageParam.getSortOrder());
             queryWrapper.orderBy(true, ruleItemPageParam.getSortOrder()

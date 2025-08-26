@@ -8,7 +8,7 @@
 	</a-card>
 </template>
 
-<script setup name="devDict">
+<script setup name="devRule">
 import Category from './category/index.vue'
 
 const activeKey = ref('FRM')
