@@ -106,4 +106,28 @@ public class RuleItemController {
         return CommonResult.data(ruleItemService.detail(ruleItemIdParam));
     }
 
+    /**
+     * 禁用数据清洗规则项
+     */
+    @ApiOperationSupport(order = 7)
+    @Operation(summary = "禁用数据清洗规则项")
+    @CommonLog("禁用数据清洗规则项")
+    @PostMapping("/uba/ruleItem/disable")
+    public CommonResult<String> disable(@RequestBody RuleItemIdParam ruleItemIdParam) {
+        ruleItemService.disable(ruleItemIdParam);
+        return CommonResult.ok();
+    }
+
+    /**
+     * 启用数据清洗规则项
+     */
+    @ApiOperationSupport(order = 8)
+    @Operation(summary = "启用数据清洗规则项")
+    @CommonLog("启用数据清洗规则项")
+    @PostMapping("/uba/ruleItem/enable")
+    public CommonResult<String> enable(@RequestBody @Valid RuleItemIdParam ruleItemIdParam) {
+        ruleItemService.enable(ruleItemIdParam);
+        return CommonResult.ok();
+    }
+
 }

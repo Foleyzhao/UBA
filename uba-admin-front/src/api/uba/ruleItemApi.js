@@ -27,5 +27,14 @@ export default {
 	// 获取规则详情
 	ruleItemDetail(data) {
 		return request('detail', data, 'get')
-	}
+	},
+	// 禁用数据清洗规则项
+	ruleItemDisable(data) {
+		return request('disable', data)
+	},
+	// 启用数据清洗规则项
+	ruleItemEnable(data) {
+		return request('enable', data)
+	},
+
 }

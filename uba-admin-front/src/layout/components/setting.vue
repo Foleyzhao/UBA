@@ -67,7 +67,7 @@
 						:disabled="moduleUnfoldDisabled"
 					/>
 				</a-form-item>
-				<a-form-item label="固定宽度" v-if="layout == layoutEnum.TOP">
+				<a-form-item label="固定宽度" v-if="layout === layoutEnum.TOP">
 					<a-switch :checked="fixedWidth" @change="toggleState('fixedWidth')"/>
 				</a-form-item>
 				<a-form-item label="面包屑">

@@ -53,4 +53,14 @@ public interface RuleItemService extends IService<RuleItem> {
      */
     RuleItem queryEntity(String id);
 
+    /**
+     * 禁用数据清洗规则项
+     */
+    void disable(RuleItemIdParam ruleItemIdParam);
+
+    /**
+     * 启用数据清洗规则项
+     */
+    void enable(RuleItemIdParam ruleItemIdParam);
+
 }

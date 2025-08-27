@@ -26,7 +26,7 @@ public class RuleItemAddParam {
      * 规则项内容
      */
     @Schema(description = "规则项内容")
-    @NotBlank(message = "content能为空")
+    @NotBlank(message = "content不能为空")
     private String content;
 
     /**
@@ -35,6 +35,12 @@ public class RuleItemAddParam {
     @Schema(description = "规则项结果")
     @NotBlank(message = "result不能为空")
     private String result;
+
+    /**
+     * 状态
+     */
+    @Schema(description = "状态")
+    private String status;
 
     /**
      * 排序码

@@ -7,12 +7,14 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.huanniankj.common.enums.CommonSortOrderEnum;
 import com.huanniankj.common.exception.CommonException;
 import com.huanniankj.common.page.CommonPageRequest;
 import com.huanniankj.uba.modular.rule.entity.RuleItem;
+import com.huanniankj.uba.modular.rule.enums.RuleItemStatusEnum;
 import com.huanniankj.uba.modular.rule.mapper.RuleItemMapper;
 import com.huanniankj.uba.modular.rule.param.RuleItemAddParam;
 import com.huanniankj.uba.modular.rule.param.RuleItemEditParam;
@@ -119,6 +121,18 @@ public class RuleItemServiceImpl extends ServiceImpl<RuleItemMapper, RuleItem> i
             throw new CommonException("数据清洗规则项不存在，id值为：{}", id);
         }
         return ruleItem;
+    }
+
+    @Override
+    public void disable(RuleItemIdParam ruleItemIdParam) {
+        this.update(new LambdaUpdateWrapper<RuleItem>().eq(RuleItem::getId,
+                ruleItemIdParam.getId()).set(RuleItem::getStatus, RuleItemStatusEnum.DISABLE.getValue()));
+    }
+
+    @Override
+    public void enable(RuleItemIdParam ruleItemIdParam) {
+        this.update(new LambdaUpdateWrapper<RuleItem>().eq(RuleItem::getId,
+                ruleItemIdParam.getId()).set(RuleItem::getStatus, RuleItemStatusEnum.ENABLE.getValue()));
     }
 
 }
