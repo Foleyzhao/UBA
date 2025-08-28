@@ -210,9 +210,21 @@ TODO
 
 ## 🙌 感谢名单
 
-感谢所有为见微项目做出贡献的开发者们
+感谢所有为“见微”项目做出贡献的开发者们
 
-<a href="https://github.com/Foleyzhao/UBA/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Foleyzhao/UBA" />
+<a href="https://github.com/Foleyzhao" target="_blank">
+  <img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/59009962?s=50"/>
+</a>
+<a href="https://github.com/HuanNianKJ" target="_blank">
+  <img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/227937804?s=50"/>
+</a>
+<a href="https://github.com/qiao119" target="_blank">
+  <img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/59284699?s=50"/>
+</a>
+<a href="https://github.com/meng980123" target="_blank">
+  <img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/51391324?s=50"/>
+</a>
+<a href="https://github.com/r2coding-cao" target="_blank">
+  <img width="50px" style="border-radius:999px" src="https://avatars.githubusercontent.com/u/188186817?s=50"/>
 </a>
 
