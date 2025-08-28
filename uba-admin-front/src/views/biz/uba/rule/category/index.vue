@@ -44,6 +44,9 @@
 				</a-space>
 			</template>
 			<template #bodyCell="{ column, record }">
+				<template v-if="column.dataIndex === 'field'">
+					<a-tag color="orange">{{ $TOOL.dictTypeData('RULE_FIELD', record.field) }}</a-tag>
+				</template>
 				<template v-if="column.dataIndex === 'action'">
 					<a-space>
 						<a @click="ruleFormRef.onOpen(record, categoryType)">编辑</a>

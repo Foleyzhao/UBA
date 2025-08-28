@@ -126,4 +126,11 @@ public class RuleServiceImpl extends ServiceImpl<RuleMapper, Rule> implements Ru
         return rule;
     }
 
+    @Override
+    public List<Rule> list(String category) {
+        LambdaQueryWrapper<Rule> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Rule::getCategory, category);
+        return this.list(lambdaQueryWrapper);
+    }
+
 }

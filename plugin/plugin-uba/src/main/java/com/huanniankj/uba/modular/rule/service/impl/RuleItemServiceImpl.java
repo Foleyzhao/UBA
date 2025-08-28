@@ -135,4 +135,12 @@ public class RuleItemServiceImpl extends ServiceImpl<RuleItemMapper, RuleItem> i
                 ruleItemIdParam.getId()).set(RuleItem::getStatus, RuleItemStatusEnum.ENABLE.getValue()));
     }
 
+    @Override
+    public List<RuleItem> list(String ruleId, String status) {
+        LambdaQueryWrapper<RuleItem> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(RuleItem::getRuleId, ruleId);
+        lambdaQueryWrapper.eq(RuleItem::getStatus, status);
+        return this.list(lambdaQueryWrapper);
+    }
+
 }

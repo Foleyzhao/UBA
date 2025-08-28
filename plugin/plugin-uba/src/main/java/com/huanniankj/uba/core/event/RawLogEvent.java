@@ -1,6 +1,7 @@
 package com.huanniankj.uba.core.event;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
  *
  * @author happynewyear
  */
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data
 public class RawLogEvent extends LogProcessingEvent {

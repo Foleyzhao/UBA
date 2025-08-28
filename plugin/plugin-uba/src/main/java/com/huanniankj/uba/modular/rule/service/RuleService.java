@@ -53,4 +53,9 @@ public interface RuleService extends IService<Rule> {
      */
     Rule queryEntity(String id);
 
+    /**
+     * 根据分类获取数据清洗规则列表
+     */
+    List<Rule> list(String category);
+
 }

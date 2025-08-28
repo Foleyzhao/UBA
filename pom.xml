@@ -422,6 +422,12 @@
                 <artifactId>uap-java</artifactId>
                 <version>1.6.1</version>
             </dependency>
+            <!-- commons-beanutils -->
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.11.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

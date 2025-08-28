@@ -2,6 +2,7 @@ package com.huanniankj.uba.core.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
  *
  * @author happynewyear
  */
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data
 public class CleansingFinishEvent extends EnrichmentFinishEvent {
@@ -18,5 +20,11 @@ public class CleansingFinishEvent extends EnrichmentFinishEvent {
      */
     @JsonProperty("cleansing_finish")
     private Boolean cleansingFinish = true;
+
+    /**
+     * 来源信息
+     */
+    @JsonProperty("source_info")
+    private String sourceInfo = "unknown";
 
 }

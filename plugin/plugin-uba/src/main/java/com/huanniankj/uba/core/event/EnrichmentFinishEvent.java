@@ -2,6 +2,7 @@ package com.huanniankj.uba.core.event;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
  *
  * @author happynewyear
  */
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data
 public class EnrichmentFinishEvent extends PreprocessingFinishEvent {

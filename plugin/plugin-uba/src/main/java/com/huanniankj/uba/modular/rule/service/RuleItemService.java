@@ -63,4 +63,9 @@ public interface RuleItemService extends IService<RuleItem> {
      */
     void enable(RuleItemIdParam ruleItemIdParam);
 
+    /**
+     * 根据规则ID和规则项状态获取数据清洗规则项列表
+     */
+    List<RuleItem> list(String ruleId, String status);
+
 }

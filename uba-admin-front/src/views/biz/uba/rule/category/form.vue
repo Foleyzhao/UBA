@@ -11,7 +11,14 @@
 				<a-input v-model:value="formData.name" placeholder="请输入规则名称" allow-clear/>
 			</a-form-item>
 			<a-form-item label="清洗字段：" name="field">
-				<a-input v-model:value="formData.field" placeholder="请输入清洗字段" allow-clear/>
+				<a-select
+					v-model:value="formData.field"
+					:options="ruleFieldOptions"
+					placeholder="请选择清洗字段"
+					:getPopupContainer="(trigger) => trigger.parentNode"
+					allow-clear
+				></a-select>
+<!--				<a-input v-model:value="formData.field" placeholder="请输入清洗字段" allow-clear/>-->
 			</a-form-item>
 			<a-form-item label="排序：" name="sortCode">
 				<a-input-number class="sys-wd" v-model:value="formData.sortCode" :max="1000"/>
@@ -27,7 +34,9 @@
 <script setup name="ruleForm">
 import {required} from '@/utils/formRules'
 import ubaRuleApi from '@/api/uba/ruleApi.js'
+import tool from "@/utils/tool";
 
+const ruleFieldOptions = tool.dictList('RULE_FIELD')
 // 定义emit事件
 const emit = defineEmits({successful: null})
 // 默认是关闭状态

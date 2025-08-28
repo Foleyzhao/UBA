@@ -54,14 +54,17 @@ public class PreprocessingService {
         EventConverter converter = new EventConverter();
         PreprocessingFinishEvent processedEvent = converter.convert(event);
         // 1. 执行预处理规则
-        KieSession kieSession = kieContainer.newKieSession();
-        kieSession.insert(processedEvent);
-        kieSession.setGlobal("configMap", configService.ubaDefineList().stream()
-                .collect(Collectors.toMap(Config::getConfigKey, config -> {
-                    return config.getConfigValue().replace(",", "|");
-                })));
-        kieSession.fireAllRules();
-        kieSession.dispose();
+        try (KieSession kieSession = kieContainer.newKieSession()) {
+            kieSession.insert(processedEvent);
+            kieSession.setGlobal("configMap", configService.ubaDefineList().stream()
+                    .collect(Collectors.toMap(Config::getConfigKey, config -> config.getConfigValue()
+                            .replace(",", "|"))));
+            kieSession.fireAllRules();
+            kieSession.dispose();
+        } catch (RuntimeException e) {
+            processedEvent.setPreprocessPass(false);
+            processedEvent.setPreprocessMessage(e.getMessage());
+        }
         // 2. 发布预处理消息至数增据强流程
         kafkaTemplate.send("preprocessing_log", processedEvent);
     }
