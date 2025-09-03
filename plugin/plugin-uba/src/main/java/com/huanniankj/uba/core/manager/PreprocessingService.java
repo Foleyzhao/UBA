@@ -4,6 +4,7 @@ import com.huanniankj.uba.core.event.EventConverter;
 import com.huanniankj.uba.core.event.LogProcessingEvent;
 import com.huanniankj.uba.core.event.PreprocessingFinishEvent;
 import com.huanniankj.uba.core.event.RawLogEvent;
+import com.huanniankj.uba.modular.accesslog.service.AccessLogService;
 import com.huanniankj.uba.modular.config.entity.Config;
 import com.huanniankj.uba.modular.config.service.ConfigService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,8 @@ public class PreprocessingService {
 
     private final ConfigService configService;
 
+    private final AccessLogService accessLogService;
+
     @Async("kafkaMessageExecutor")
     @KafkaListener(topics = "raw_log", groupId = "backend")
     public void onEvent(List<RawLogEvent> records, Acknowledgment ack) {
@@ -51,9 +54,11 @@ public class PreprocessingService {
     }
 
     public void process(RawLogEvent event) {
+        // 1. 保存原始日志
+        accessLogService.add(event);
+        // 2. 执行预处理规则
         EventConverter converter = new EventConverter();
         PreprocessingFinishEvent processedEvent = converter.convert(event);
-        // 1. 执行预处理规则
         try (KieSession kieSession = kieContainer.newKieSession()) {
             kieSession.insert(processedEvent);
             kieSession.setGlobal("configMap", configService.ubaDefineList().stream()
@@ -65,7 +70,7 @@ public class PreprocessingService {
             processedEvent.setPreprocessPass(false);
             processedEvent.setPreprocessMessage(e.getMessage());
         }
-        // 2. 发布预处理消息至数增据强流程
+        // 3. 发布预处理消息至数增据强流程
         kafkaTemplate.send("preprocessing_log", processedEvent);
     }
 

@@ -1,5 +1,6 @@
 package com.huanniankj.uba.modular.accesslog.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollStreamUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -9,11 +10,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.huanniankj.common.enums.CommonSortOrderEnum;
 import com.huanniankj.common.exception.CommonException;
 import com.huanniankj.common.page.CommonPageRequest;
+import com.huanniankj.uba.core.event.RawLogEvent;
 import com.huanniankj.uba.modular.accesslog.entity.AccessLogCh;
 import com.huanniankj.uba.modular.accesslog.mapper.AccessLogChMapper;
 import com.huanniankj.uba.modular.accesslog.param.AccessLogPageParam;
 import com.huanniankj.uba.modular.accesslog.param.AccessLogUuidParam;
 import com.huanniankj.uba.modular.accesslog.service.AccessLogService;
+import com.huanniankj.uba.modular.config.entity.Config;
+import com.huanniankj.uba.modular.config.enums.ConfigCategoryEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +71,12 @@ public class AccessLogServiceImpl extends ServiceImpl<AccessLogChMapper, AccessL
             throw new CommonException("访问日志不存在，id值为：{}", id);
         }
         return accessLogCh;
+    }
+
+    @Override
+    public void add(RawLogEvent event) {
+        AccessLogCh accessLog = BeanUtil.toBean(event, AccessLogCh.class);
+        this.save(accessLog);
     }
 
 }

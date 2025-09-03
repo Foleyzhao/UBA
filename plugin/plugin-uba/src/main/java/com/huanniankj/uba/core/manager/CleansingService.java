@@ -63,7 +63,7 @@ public class CleansingService {
                     String dealVale = Pattern.quote((String) PropertyUtils.getProperty(event, rule.getField()));
                     Pattern pattern = Pattern.compile(ruleItem.getContent());
                     if (pattern.matcher(dealVale).matches()) {
-                        cleansingFinishEvent.setSourceInfo(ruleItem.getResult());
+                        cleansingFinishEvent.getCleansingResult().put(rule.getName(), ruleItem.getResult());
                         break;
                     }
                 } catch (Exception e) {

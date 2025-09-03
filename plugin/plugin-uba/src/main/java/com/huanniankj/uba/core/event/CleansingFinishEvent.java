@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 访问日志数据清洗完成事件
  *
@@ -22,9 +25,9 @@ public class CleansingFinishEvent extends EnrichmentFinishEvent {
     private Boolean cleansingFinish = true;
 
     /**
-     * 来源信息
+     * 清洗结果
      */
-    @JsonProperty("source_info")
-    private String sourceInfo = "unknown";
+    @JsonProperty("cleansing_result")
+    private Map<String, String> cleansingResult = new HashMap<>();
 
 }
