@@ -35,8 +35,6 @@
         <module>plugin-api</module>
         <!-- 主启动模块 -->
         <module>web-app</module>
-        <module>plugin/plugin-uba</module>
-        <module>plugin-api/plugin-uba-api</module>
     </modules>
 
     <dependencyManagement>

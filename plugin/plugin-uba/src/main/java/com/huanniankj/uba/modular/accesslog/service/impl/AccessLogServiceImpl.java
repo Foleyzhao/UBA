@@ -16,8 +16,6 @@ import com.huanniankj.uba.modular.accesslog.mapper.AccessLogChMapper;
 import com.huanniankj.uba.modular.accesslog.param.AccessLogPageParam;
 import com.huanniankj.uba.modular.accesslog.param.AccessLogUuidParam;
 import com.huanniankj.uba.modular.accesslog.service.AccessLogService;
-import com.huanniankj.uba.modular.config.entity.Config;
-import com.huanniankj.uba.modular.config.enums.ConfigCategoryEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

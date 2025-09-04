@@ -18,18 +18,18 @@ spring:
       stat-view-servlet:
         enabled: true
         login-username: admin
-        login-password: uba@test_
+        login-password: uba@2025_
     dynamic:
       datasource:
         master: # MySQL主数据源
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://192.168.1.11:3306/uba?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&useInformationSchema=true&rewriteBatchedStatements=true
+          url: jdbc:mysql://192.168.1.15:3306/uba?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&useInformationSchema=true&rewriteBatchedStatements=true
           username: uba
-          password: Jishulink@2025_uba
+          password: uba@2025
         clickhouse: # ClickHouse 数据源
-          url: jdbc:ch://localhost:8123/uba?use_timezone=Asia/Shanghai
-          username: uba
-          password: uba@test_
+          url: jdbc:ch://192.168.1.15:8123/uba?use_timezone=Asia/Shanghai
+          username: default
+          password: uba@2025
           driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
           hikari:
             maximum-pool-size: 5 # ClickHouse连接池
@@ -61,9 +61,9 @@ spring:
   data:
     redis:
       database: 1
-      host: 192.168.1.11
+      host: 192.168.1.15
       port: 6379
-      password: ""
+      password: uba@2025
       timeout: 10s
       lettuce:
         pool:
@@ -72,11 +72,11 @@ spring:
           max-idle: 10
           min-idle: 0
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 192.168.1.15:9092
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-#      bootstrap-servers: localhost:9092
+#      bootstrap-servers: 121.40.98.140:9092
       group-id: backend
       auto-offset-reset: earliest
       enable-auto-commit: false
@@ -178,7 +178,7 @@ knife4j:
   basic:
     enable: true
     username: admin
-    password: uba@test_
+    password: uba@2025_
   setting:
     enableOpenApi: false
     enableSwaggerModels: false

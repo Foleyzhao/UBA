@@ -5,7 +5,6 @@ import com.huanniankj.uba.core.event.RawLogEvent;
 import com.huanniankj.uba.modular.accesslog.entity.AccessLogCh;
 import com.huanniankj.uba.modular.accesslog.param.AccessLogPageParam;
 import com.huanniankj.uba.modular.accesslog.param.AccessLogUuidParam;
-import com.huanniankj.uba.modular.config.param.ConfigAddParam;
 
 import java.util.List;
 
