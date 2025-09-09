@@ -16,7 +16,7 @@ const DEFAULT_CONFIG = {
 	// 请求是否开启缓存
 	REQUEST_CACHE: false,
 	// 布局 经典：classical，双排菜单：doublerow, 顶栏菜单：top
-	SYSTEM_LAYOUT: 'doublerow',
+	SYSTEM_LAYOUT: 'classical',
 	// 菜单是否折叠
 	SYSTEM_MENU_COLLAPSE: false,
 	// 模块坞
@@ -60,7 +60,7 @@ const DEFAULT_CONFIG = {
 		// 版本
 		SYSTEM_SYS_VERSION: '3.0',
 		// 版权
-		SYSTEM_SYS_COPYRIGHT: 'UBA ©2024 Created by 欢年科技',
+		SYSTEM_SYS_COPYRIGHT: 'UBA ©2025 Created by 欢年科技',
 		// 版权跳转URL
 		SYSTEM_SYS_COPYRIGHT_URL: 'https://www.huanniankj.com',
 		// 默认文件存储
