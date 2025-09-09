@@ -20,6 +20,7 @@ spring:
         login-username: admin
         login-password: uba@2025_
     dynamic:
+      primary: master
       datasource:
         master: # MySQL主数据源
           driver-class-name: com.mysql.cj.jdbc.Driver
@@ -141,6 +142,8 @@ logging:
     com.clickhouse.jdbc: WARN
     # 连接池相关日志
     com.zaxxer.hikari: INFO
+    # com.baomidou.dynamic.datasource: DEBUG
+    # org.springframework.jdbc: DEBUG
 
 easy-trans:
   is-enable-redis: true
@@ -188,7 +191,6 @@ knife4j:
 
 springdoc:
   default-flat-param-object: true
-  # knife4j doc groups
   group-configs:
     - group: PLUGIN-AUTH
       display-name: ${springdoc.group-configs[0].group}

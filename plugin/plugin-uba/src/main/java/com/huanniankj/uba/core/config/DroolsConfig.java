@@ -43,7 +43,7 @@ public class DroolsConfig {
         Resource[] ruleFiles = getRuleFiles();
         for (Resource file : ruleFiles) {
             String filePath = RULES_PATH + file.getFilename();
-            log.info("Loading Drools rule file: " + filePath);
+            log.info("Loading Drools rule file: {}", filePath);
             kieFileSystem.write(ResourceFactory.newClassPathResource(filePath, "UTF-8"));
         }
         // 3. 构建 KieModule
@@ -56,8 +56,7 @@ public class DroolsConfig {
         }
         // 5. 创建 KieContainer
         KieModule kieModule = kieBuilder.getKieModule();
-        KieContainer kieContainer = kieServices.newKieContainer(kieModule.getReleaseId());
-        return kieContainer;
+        return kieServices.newKieContainer(kieModule.getReleaseId());
     }
 
     /**

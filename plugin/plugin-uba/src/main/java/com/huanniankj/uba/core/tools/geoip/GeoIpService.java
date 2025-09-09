@@ -1,16 +1,18 @@
 package com.huanniankj.uba.core.tools.geoip;
 
-import cn.hutool.core.io.resource.ClassPathResource;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.AsnResponse;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.model.CountryResponse;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 
 /**
@@ -18,6 +20,7 @@ import java.net.InetAddress;
  *
  * @author happynewyear
  */
+@Data
 @Service
 public class GeoIpService {
 
@@ -27,15 +30,23 @@ public class GeoIpService {
 
     private final DatabaseReader asnReader;
 
+
     @Autowired
-    public GeoIpService() throws IOException {
-        // 加载数据库文件
-        File countryDatabase = new ClassPathResource("geodb/GeoLite2-Country.mmdb").getFile();
-        File cityDatabase = new ClassPathResource("geodb/GeoLite2-City.mmdb").getFile();
-        File asnDatabase = new ClassPathResource("geodb/GeoLite2-ASN.mmdb").getFile();
-        this.countryReader = new DatabaseReader.Builder(countryDatabase).build();
-        this.cityReader = new DatabaseReader.Builder(cityDatabase).build();
-        this.asnReader = new DatabaseReader.Builder(asnDatabase).build();
+    public GeoIpService(ResourceLoader resourceLoader) throws IOException {
+        Resource countryResource = resourceLoader.getResource("classpath:geodb/GeoLite2-Country.mmdb");
+        try (InputStream inputStream = countryResource.getInputStream()) {
+            countryReader = new DatabaseReader.Builder(inputStream).build();
+        }
+
+        Resource cityResource = resourceLoader.getResource("classpath:geodb/GeoLite2-City.mmdb");
+        try (InputStream inputStream = cityResource.getInputStream()) {
+            cityReader = new DatabaseReader.Builder(inputStream).build();
+        }
+
+        Resource asnResource = resourceLoader.getResource("classpath:geodb/GeoLite2-ASN.mmdb");
+        try (InputStream inputStream = asnResource.getInputStream()) {
+            asnReader = new DatabaseReader.Builder(inputStream).build();
+        }
     }
 
     /**
