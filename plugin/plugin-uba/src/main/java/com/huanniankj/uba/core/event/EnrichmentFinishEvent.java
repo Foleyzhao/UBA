@@ -22,6 +22,12 @@ public class EnrichmentFinishEvent extends PreprocessingFinishEvent {
     private Boolean enrichmentFinish = true;
 
     /**
+     * 国家信息
+     */
+    @JsonProperty("country_info")
+    private String countryInfo;
+
+    /**
      * 城市信息
      */
     @JsonProperty("city_info")
@@ -32,5 +38,23 @@ public class EnrichmentFinishEvent extends PreprocessingFinishEvent {
      */
     @JsonProperty("agent_info")
     private String agentInfo;
+
+    /**
+     * 浏览器信息
+     */
+    @JsonProperty("browser_info")
+    private String browserInfo;
+
+    /**
+     * 操作系统信息
+     */
+    @JsonProperty("os_info")
+    private String osInfo;
+
+    /**
+     * 设备类型信息
+     */
+    @JsonProperty("device_type_info")
+    private String deviceTypeInfo;
 
 }

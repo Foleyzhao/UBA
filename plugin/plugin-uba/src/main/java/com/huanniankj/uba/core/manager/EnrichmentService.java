@@ -59,15 +59,23 @@ public class EnrichmentService {
         // 2.进行数据增强
         // 2.1.城市信息增强
         try {
-            enrichmentFinishEvent.setCityInfo(geoIpService.getCityInfo(event.getRemoteAddr()).toString());
+            enrichmentFinishEvent.setCityInfo(geoIpService.getCityInfo(event.getRemoteAddr()).getCity().getName());
+            enrichmentFinishEvent.setCountryInfo(geoIpService.getCityInfo(event.getRemoteAddr()).getCountry().getName());
         } catch (IOException | GeoIp2Exception e) {
             enrichmentFinishEvent.setCityInfo("unknown");
+            enrichmentFinishEvent.setCountryInfo("unknown");
         }
         // 2.2.用户代理信息增强
         try {
             enrichmentFinishEvent.setAgentInfo(userAgentService.parseUserAgent(event.getHttpUserAgent()).toString());
+            enrichmentFinishEvent.setBrowserInfo(userAgentService.parseUserAgent(event.getHttpUserAgent()).getBrowser());
+            enrichmentFinishEvent.setOsInfo(userAgentService.parseUserAgent(event.getHttpUserAgent()).getOs());
+            enrichmentFinishEvent.setDeviceTypeInfo(userAgentService.parseUserAgent(event.getHttpUserAgent()).getDeviceType());
         } catch (Exception e) {
             enrichmentFinishEvent.setAgentInfo("unknown");
+            enrichmentFinishEvent.setBrowserInfo("unknown");
+            enrichmentFinishEvent.setOsInfo("unknown");
+            enrichmentFinishEvent.setDeviceTypeInfo("unknown");
         }
         // 3. 发布数增据强消息至数据清洗流程
         kafkaTemplate.send("enrichment_log", enrichmentFinishEvent);

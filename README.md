@@ -180,7 +180,7 @@ TODO
 | 内容             | 说明文档                                     | 备注   |
 |-----------------|------------------------------------------|------|
 | `Nginx配置`      |                                          |      |
-| `Vector配置`     | [Markdown语法](doc/Vector.md "Vector配置说明") |      |
+| `Vector配置`     | [Vector配置说明](doc/Vector.md "Vector配置说明") |      |
 | `ClickHouse配置` |                                          |      |
 | `Kafka配置`      |                                          |      |
 

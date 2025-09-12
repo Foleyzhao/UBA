@@ -67,6 +67,13 @@ public class Tag extends CommonEntity {
     private String tagDesc;
 
     /**
+     * 标签数据类型
+     */
+    @TableField(value = "tag_data_type")
+    @Schema(description = "标签数据类型")
+    private String tagDataType;
+
+    /**
      * 编码
      */
     @Schema(description = "编码")

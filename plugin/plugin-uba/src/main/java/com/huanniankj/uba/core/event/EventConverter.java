@@ -1,5 +1,6 @@
 package com.huanniankj.uba.core.event;
 
+import com.huanniankj.uba.modular.event.entity.Event;
 import org.springframework.beans.BeanUtils;
 
 import java.time.Instant;
@@ -41,13 +42,23 @@ public class EventConverter {
         return target;
     }
 
-    public StructuringFinishEvent convert(CleansingFinishEvent source) {
-        StructuringFinishEvent target = new StructuringFinishEvent();
-        // 复制同名属性
-        BeanUtils.copyProperties(source, target);
-        // 处理特殊字段
-        target.setDealTime(Instant.now());
-        target.setType("structuring");
+    public Event convert(CleansingFinishEvent source) {
+        Event target = new Event();
+        target.setEventTime(source.getDate());
+        target.setEventType("page_view");
+        // 处理原始日志数据
+        target.setIpAddress(source.getRemoteAddr());
+        target.setReferer(source.getHttpReferer());
+        target.setUserAgent(source.getHttpUserAgent());
+        // 处理数据增强阶段数据
+        target.setCountry(source.getCountryInfo());
+        target.setCity(source.getCityInfo());
+        target.setOs(source.getOsInfo());
+        target.setBrowser(source.getBrowserInfo());
+        target.setDeviceType(source.getDeviceTypeInfo());
+        // 处理数据清洗阶段数据
+        target.setUserId("unknown");
+
         return target;
     }
 
